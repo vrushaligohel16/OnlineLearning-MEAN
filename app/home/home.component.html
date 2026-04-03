@@ -1,0 +1,14 @@
+<div class="home-container">
+  <div class="home-card">
+    <h1>Welcome to Edu Platform!</h1>
+    
+    @if (user) {
+      <div class="user-info">
+        <h2>Hello, {{ user.name }}!</h2>
+        <p>Email: {{ user.email }}</p>
+      </div>
+    }
+
+    <button class="btn btn-logout" (click)="logout()">Logout</button>
+  </div>
+</div>

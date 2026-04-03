@@ -1,0 +1,1498 @@
+<!-- Navbar Start -->
+<nav class="navbar navbar-expand-lg bg-dark navbar-dark shadow sticky-top p-0">
+    <a routerLink="/admin-dashboard" class="navbar-brand d-flex align-items-center px-4 px-lg-5">
+        <h2 class="m-0 text-white"><i class="fa fa-user-shield me-3"></i>Admin Panel</h2>
+    </a>
+    <button type="button" class="navbar-toggler me-4" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarCollapse">
+        <div class="navbar-nav ms-auto p-4 p-lg-0">
+            <a routerLink="/admin-dashboard" class="nav-item nav-link active">Dashboard</a>
+        </div>
+        <button class="btn btn-danger py-4 px-lg-5 d-none d-lg-block" (click)="logout()">Logout<i class="fa fa-sign-out-alt ms-3"></i></button>
+    </div>
+</nav>
+<!-- Navbar End -->
+
+<!-- Admin Dashboard Start -->
+<div class="container-fluid py-4">
+    <div class="container">
+        <!-- Welcome Section -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <div class="card shadow-sm border-0">
+                    <div class="card-body bg-primary text-white rounded">
+                        <h3 class="mb-0"><i class="fa fa-user-shield me-2"></i>Welcome, {{ user?.name || 'Admin' }}</h3>
+                        <p class="mb-0 mt-2">Manage your eLearning platform from here</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Stats Cards -->
+        <div class="row g-4 mb-4">
+            <div class="col-lg-3 col-md-6">
+                <div class="card shadow-sm border-0 h-100">
+                    <div class="card-body text-center">
+                        <i class="fa fa-users fa-3x text-primary mb-3"></i>
+                        <h3 class="mb-0">{{ students.length }}</h3>
+                        <p class="text-muted mb-0">Total Students</p>
+                        @if (isLoading && students.length === 0) {
+                            <small class="text-muted">Loading...</small>
+                        }
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6">
+                <div class="card shadow-sm border-0 h-100">
+                    <div class="card-body text-center">
+                        <i class="fa fa-chalkboard-teacher fa-3x text-success mb-3"></i>
+                        <h3 class="mb-0">{{ mentors.length }}</h3>
+                        <p class="text-muted mb-0">Total Mentors</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6">
+                <div class="card shadow-sm border-0 h-100">
+                    <div class="card-body text-center">
+                        <i class="fa fa-book fa-3x text-info mb-3"></i>
+                        <h3 class="mb-0">{{ courses.length }}</h3>
+                        <p class="text-muted mb-0">Total Courses</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6">
+                <div class="card shadow-sm border-0 h-100">
+                    <div class="card-body text-center">
+                        <i class="fa fa-credit-card fa-3x text-warning mb-3"></i>
+                        <h3 class="mb-0">{{ getTotalActiveSubscriptions() }}</h3>
+                        <p class="text-muted mb-0">Active Subscriptions</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tabs Navigation -->
+        <div class="card shadow-sm border-0 mb-4">
+            <div class="card-header bg-white border-bottom">
+                <ul class="nav nav-tabs card-header-tabs" role="tablist">
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" [class.active]="activeTab === 'students'" (click)="setActiveTab('students')">
+                            <i class="fa fa-users me-2"></i>Students
+                        </button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" [class.active]="activeTab === 'mentors'" (click)="setActiveTab('mentors')">
+                            <i class="fa fa-chalkboard-teacher me-2"></i>Mentors
+                        </button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" [class.active]="activeTab === 'course-categories'" (click)="setActiveTab('course-categories')">
+                            <i class="fa fa-folder me-2"></i>Course Categories
+                        </button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" [class.active]="activeTab === 'courses'" (click)="setActiveTab('courses')">
+                            <i class="fa fa-book me-2"></i>Courses
+                        </button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" [class.active]="activeTab === 'certificates'" (click)="setActiveTab('certificates')">
+                            <i class="fa fa-certificate me-2"></i>Certificates
+                        </button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" [class.active]="activeTab === 'subscriptions'" (click)="setActiveTab('subscriptions')">
+                            <i class="fa fa-credit-card me-2"></i>Subscriptions
+                        </button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" [class.active]="activeTab === 'books'" (click)="setActiveTab('books')">
+                            <i class="fa fa-book-open me-2"></i>Books
+                        </button>
+                    </li>
+                  
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" [class.active]="activeTab === 'contacts'" (click)="setActiveTab('contacts')">
+                            <i class="fa fa-envelope me-2"></i>Contacts
+                        </button>
+                    </li>
+                     <li class="nav-item" role="presentation">
+                        <button class="nav-link" [class.active]="activeTab === 'feedback'" (click)="setActiveTab('feedback')">
+                            <i class="fa fa-comments me-2"></i>Feedback
+                        </button>
+                    </li>
+                </ul>
+            </div>
+            <div class="card-body">
+                <!-- Students Tab -->
+                @if (activeTab === 'students') {
+                    <div class="tab-content">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <h5 class="mb-0"><i class="fa fa-users me-2 text-primary"></i>Student Management</h5>
+                            <!-- <button class="btn btn-sm btn-outline-primary" (click)="loadStudents()" [disabled]="isLoading">
+                                <i class="fa fa-sync me-2" [class.fa-spin]="isLoading"></i>Refresh
+                            </button> -->
+                        </div>
+                        
+                        @if (errorMessage) {
+                            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                                {{ errorMessage }}
+                                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                            </div>
+                        }
+
+                        @if (isLoading && students.length === 0) {
+                            <div class="text-center py-5">
+                                <div class="spinner-border text-primary" role="status">
+                                    <span class="visually-hidden">Loading...</span>
+                                </div>
+                                <p class="mt-3 text-muted">Loading students...</p>
+                            </div>
+                        } @else if (students.length === 0) {
+                            <div class="text-center py-5">
+                                <i class="fa fa-users fa-3x text-muted mb-3"></i>
+                                <p class="text-muted">No students found.</p>
+                            </div>
+                        } @else {
+                            <div class="table-responsive">
+                                <table class="table table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th>ID</th>
+                                            <th>Name</th>
+                                            <th>Email</th>
+                                            <th>Enrolled Date</th>
+                                            <th>Status</th>
+                                            <th>Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @for (student of students; track student.id) {
+                                            <tr>
+                                                <td><small class="text-muted font-monospace">{{ student.id }}</small></td>
+                                                <td><strong>{{ student.name }}</strong></td>
+                                                <td>{{ student.email }}</td>
+                                                <td>{{ student.enrolledDate }}</td>
+                                                <td><span class="badge bg-success">{{ student.status }}</span></td>
+                                                <td>
+                                                    <!-- <button class="btn btn-sm btn-outline-primary me-2">
+                                                        <i class="fa fa-eye"></i> View
+                                                    </button> -->
+                                                    <button class="btn btn-sm btn-outline-danger" (click)="deleteStudent(student.id)" [disabled]="isLoading">
+                                                        <i class="fa fa-trash"></i> Delete
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="mt-3">
+                                <p class="text-muted small">Total Students: <strong>{{ students.length }}</strong></p>
+                            </div>
+                        }
+                    </div>
+                }
+
+                <!-- Mentors Tab -->
+                @if (activeTab === 'mentors') {
+                    <div class="tab-content">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <h5 class="mb-0"><i class="fa fa-chalkboard-teacher me-2 text-primary"></i>Mentor Management</h5>
+                            <button class="btn btn-sm btn-primary" (click)="openMentorForm()">
+                                <i class="fa fa-plus me-2"></i>Add Mentor
+                            </button>
+                        </div>
+
+                        @if (errorMessage) {
+                            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                                {{ errorMessage }}
+                                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                            </div>
+                        }
+
+                        @if (successMessage) {
+                            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                                {{ successMessage }}
+                                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                            </div>
+                        }
+
+                        @if (isMentorFormOpen) {
+                            <div class="card shadow-sm border-primary mb-4">
+                                <div class="card-header bg-primary text-white">
+                                    <h6 class="mb-0">
+                                        <i class="fa fa-{{ isEditingMentor ? 'edit' : 'plus' }} me-2"></i>
+                                        {{ isEditingMentor ? 'Edit' : 'Add' }} Mentor
+                                    </h6>
+                                </div>
+                                <div class="card-body">
+                                    <div class="row g-3">
+                                        <div class="col-md-6">
+                                            <label class="form-label">Name <span class="text-danger">*</span></label>
+                                            <input type="text" class="form-control" 
+                                                   [(ngModel)]="mentorForm.name" 
+                                                   placeholder="Enter mentor name">
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label class="form-label">Email Address <span class="text-danger">*</span></label>
+                                            <input type="email" class="form-control" 
+                                                   [(ngModel)]="mentorForm.email" 
+                                                   placeholder="Enter email address">
+                                        </div>
+                                        <div class="col-md-12">
+                                            <label class="form-label">Profile Image</label>
+                                            <input type="file" 
+                                                   class="form-control" 
+                                                   accept="image/jpeg,image/jpg,image/png,image/gif,image/webp"
+                                                   (change)="onMentorImageSelected($event)">
+                                            <small class="text-muted">Max size: 5MB. Supported formats: JPEG, PNG, GIF, WEBP</small>
+                                        </div>
+                                        @if (mentorImagePreview) {
+                                            <div class="col-12">
+                                                <label class="form-label">Image Preview</label>
+                                                <div>
+                                                    <img [src]="mentorImagePreview" alt="Mentor Preview" 
+                                                         class="img-thumbnail" 
+                                                         style="max-width: 200px; max-height: 200px; object-fit: cover;">
+                                                </div>
+                                            </div>
+                                        }
+                                        <div class="col-md-12">
+                                            <label class="form-label">Education History</label>
+                                            <textarea class="form-control" rows="3" 
+                                                      [(ngModel)]="mentorForm.educationHistory" 
+                                                      placeholder="Enter education history (e.g., B.S. Computer Science, MIT, 2010)"></textarea>
+                                        </div>
+                                        <div class="col-md-12">
+                                            <label class="form-label">Experience</label>
+                                            <textarea class="form-control" rows="4" 
+                                                      [(ngModel)]="mentorForm.experience" 
+                                                      placeholder="Enter professional experience"></textarea>
+                                        </div>
+                                        <div class="col-md-4">
+                                            <label class="form-label">GitHub Link</label>
+                                            <input type="url" class="form-control" 
+                                                   [(ngModel)]="mentorForm.githubLink" 
+                                                   placeholder="https://github.com/username">
+                                        </div>
+                                        <div class="col-md-4">
+                                            <label class="form-label">LinkedIn Link</label>
+                                            <input type="url" class="form-control" 
+                                                   [(ngModel)]="mentorForm.linkedinLink" 
+                                                   placeholder="https://linkedin.com/in/username">
+                                        </div>
+                                        <div class="col-md-4">
+                                            <label class="form-label">YouTube Link</label>
+                                            <input type="url" class="form-control" 
+                                                   [(ngModel)]="mentorForm.youtubeLink" 
+                                                   placeholder="https://youtube.com/@username">
+                                        </div>
+                                        <div class="col-md-12">
+                                            <label class="form-label">Course Specialization</label>
+                                            <input type="text" class="form-control" 
+                                                   [(ngModel)]="mentorForm.courseSpecialization" 
+                                                   placeholder="Enter course specialization (e.g., Web Development, Data Science, etc.)">
+                                        </div>
+                                    </div>
+                                    <div class="mt-3 d-flex gap-2">
+                                        <button class="btn btn-primary" (click)="saveMentor()" [disabled]="isLoading || !mentorForm.name.trim() || !mentorForm.email.trim()">
+                                            @if (isLoading) {
+                                                <span class="spinner-border spinner-border-sm me-2"></span>
+                                            } @else {
+                                                <i class="fa fa-save me-2"></i>
+                                            }
+                                            {{ isEditingMentor ? 'Update' : 'Create' }} Mentor
+                                        </button>
+                                        <button class="btn btn-secondary" (click)="closeMentorForm()" [disabled]="isLoading">
+                                            <i class="fa fa-times me-2"></i>Cancel
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+
+                        @if (isLoading && mentors.length === 0 && !isMentorFormOpen) {
+                            <div class="text-center py-5">
+                                <div class="spinner-border text-primary" role="status">
+                                    <span class="visually-hidden">Loading...</span>
+                                </div>
+                                <p class="mt-3 text-muted">Loading mentors...</p>
+                            </div>
+                        } @else if (mentors.length === 0) {
+                            <div class="text-center py-5">
+                                <i class="fa fa-chalkboard-teacher fa-3x text-muted mb-3"></i>
+                                <p class="text-muted">No mentors found.</p>
+                                <button class="btn btn-primary" (click)="openMentorForm()">
+                                    <i class="fa fa-plus me-2"></i>Add First Mentor
+                                </button>
+                            </div>
+                        } @else {
+                            <div class="table-responsive">
+                                <table class="table table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th>Image</th>
+                                            <th>Name</th>
+                                            <th>Email</th>
+                                            <th>Specialization</th>
+                                            <th>Education</th>
+                                            <th>Experience</th>
+                                            <th>Social Links</th>
+                                            <th>Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @for (mentor of mentors; track mentor.id) {
+                                            <tr>
+                                                <td>
+                                                    @if (mentor.image) {
+                                                        <img [src]="mentor.image" alt="{{ mentor.name }}" 
+                                                             class="rounded-circle" 
+                                                             style="width: 50px; height: 50px; object-fit: cover;">
+                                                    } @else {
+                                                        <div class="bg-secondary rounded-circle d-flex align-items-center justify-content-center" 
+                                                             style="width: 50px; height: 50px;">
+                                                            <i class="fa fa-user text-white"></i>
+                                                        </div>
+                                                    }
+                                                </td>
+                                                <td><strong>{{ mentor.name }}</strong></td>
+                                                <td>{{ mentor.email }}</td>
+                                                <td>
+                                                    @if (mentor.courseSpecialization) {
+                                                        <span class="badge bg-info">{{ mentor.courseSpecialization }}</span>
+                                                    } @else {
+                                                        <small class="text-muted">Not specified</small>
+                                                    }
+                                                </td>
+                                                <td>
+                                                    <small class="text-muted">{{ mentor.educationHistory || 'Not provided' }}</small>
+                                                </td>
+                                                <td>
+                                                    <small class="text-muted">{{ (mentor.experience || 'Not provided').substring(0, 50) }}{{ (mentor.experience && mentor.experience.length > 50) ? '...' : '' }}</small>
+                                                </td>
+                                                <td>
+                                                    <div class="d-flex gap-1">
+                                                        @if (mentor.githubLink) {
+                                                            <a [href]="mentor.githubLink" target="_blank" class="btn btn-sm btn-outline-dark" title="GitHub">
+                                                                <i class="fab fa-github"></i>
+                                                            </a>
+                                                        }
+                                                        @if (mentor.linkedinLink) {
+                                                            <a [href]="mentor.linkedinLink" target="_blank" class="btn btn-sm btn-outline-primary" title="LinkedIn">
+                                                                <i class="fab fa-linkedin"></i>
+                                                            </a>
+                                                        }
+                                                        @if (mentor.youtubeLink) {
+                                                            <a [href]="mentor.youtubeLink" target="_blank" class="btn btn-sm btn-outline-danger" title="YouTube">
+                                                                <i class="fab fa-youtube"></i>
+                                                            </a>
+                                                        }
+                                                        @if (!mentor.githubLink && !mentor.linkedinLink && !mentor.youtubeLink) {
+                                                            <small class="text-muted">No links</small>
+                                                        }
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    <button class="btn btn-sm btn-outline-primary me-2" (click)="openMentorForm(mentor)">
+                                                        <i class="fa fa-edit"></i> Edit
+                                                    </button>
+                                                    <button class="btn btn-sm btn-outline-danger" (click)="deleteMentor(mentor.id)" [disabled]="isLoading">
+                                                        <i class="fa fa-trash"></i> Delete
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="mt-3">
+                                <p class="text-muted small">Total Mentors: <strong>{{ mentors.length }}</strong></p>
+                            </div>
+                        }
+                    </div>
+                }
+
+                <!-- Courses Tab -->
+                @if (activeTab === 'courses') {
+                    <div class="tab-content">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <h5 class="mb-0"><i class="fa fa-book me-2 text-primary"></i>Course Management</h5>
+                            <button class="btn btn-sm btn-primary" (click)="openCourseForm()">
+                                <i class="fa fa-plus me-2"></i>Add Course
+                            </button>
+                        </div>
+
+                        @if (errorMessage) {
+                            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                                {{ errorMessage }}
+                                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                            </div>
+                        }
+
+                        @if (successMessage) {
+                            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                                {{ successMessage }}
+                                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                            </div>
+                        }
+
+                        @if (isCourseFormOpen) {
+                            <div class="card shadow-sm border-primary mb-4">
+                                <div class="card-header bg-primary text-white">
+                                    <h6 class="mb-0">
+                                        <i class="fa fa-{{ isEditingCourse ? 'edit' : 'plus' }} me-2"></i>
+                                        {{ isEditingCourse ? 'Edit' : 'Add' }} Course
+                                    </h6>
+                                </div>
+                                <div class="card-body">
+                                    <div class="row g-3">
+                                        <div class="col-md-6">
+                                            <label class="form-label">Course Name <span class="text-danger">*</span></label>
+                                            <input type="text" class="form-control" 
+                                                   [(ngModel)]="courseForm.name" 
+                                                   placeholder="Enter course name">
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label class="form-label">Institute Name <span class="text-danger">*</span></label>
+                                            <input type="text" class="form-control" 
+                                                   [(ngModel)]="courseForm.instituteName" 
+                                                   placeholder="Enter institute name">
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label class="form-label">Course Category <span class="text-danger">*</span></label>
+                                            <select class="form-select" [(ngModel)]="courseForm.categoryId">
+                                                <option value="">Select Category</option>
+                                                @for (category of courseCategories; track category.id) {
+                                                    <option [value]="category.id">{{ category.name }}</option>
+                                                }
+                                            </select>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label class="form-label">Mentor <span class="text-danger">*</span></label>
+                                            <select class="form-select" [(ngModel)]="courseForm.mentorId">
+                                                <option value="">Select Mentor</option>
+                                                @for (mentor of mentors; track mentor.id) {
+                                                    <option [value]="mentor.id">{{ mentor.name }} - {{ mentor.courseSpecialization }}</option>
+                                                }
+                                            </select>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label class="form-label">Course Duration (Hours) <span class="text-danger">*</span></label>
+                                            <input type="number" class="form-control" 
+                                                   [(ngModel)]="courseForm.duration" 
+                                                   min="1" 
+                                                   placeholder="Enter duration in hours">
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label class="form-label">Number of Sessions <span class="text-danger">*</span></label>
+                                            <input type="number" class="form-control" 
+                                                   [(ngModel)]="courseForm.numberOfSessions" 
+                                                   min="1" 
+                                                   (ngModelChange)="updateVideoFields()"
+                                                   placeholder="Enter number of sessions">
+                                        </div>
+                                        <div class="col-md-12">
+                                            <label class="form-label">Course Image</label>
+                                            <input type="file" 
+                                                   class="form-control" 
+                                                   accept="image/jpeg,image/jpg,image/png,image/gif,image/webp"
+                                                   (change)="onCourseImageSelected($event)">
+                                            <small class="text-muted">Max size: 5MB. Supported formats: JPEG, PNG, GIF, WEBP</small>
+                                        </div>
+                                        @if (courseImagePreview) {
+                                            <div class="col-12">
+                                                <label class="form-label">Image Preview</label>
+                                                <div>
+                                                    <img [src]="courseImagePreview" alt="Course Preview" 
+                                                         class="img-thumbnail" 
+                                                         style="max-width: 200px; max-height: 200px; object-fit: cover;">
+                                                </div>
+                                            </div>
+                                        }
+                                        
+                                        <!-- Videos Section -->
+                                        <div class="col-12">
+                                            <hr>
+                                            <h6 class="text-primary">
+                                                <i class="fa fa-video me-2"></i>Course Videos ({{ courseForm.numberOfSessions }} Session{{ courseForm.numberOfSessions !== 1 ? 's' : '' }})
+                                            </h6>
+                                            <div class="row g-3 mt-2">
+                                                @for (video of courseForm.videos; track $index; let i = $index) {
+                                                    <div class="col-12 border rounded p-3">
+                                                        <h6 class="mb-3">Video {{ i + 1 }}</h6>
+                                                        <div class="row g-2">
+                                                            <div class="col-md-6">
+                                                                <label class="form-label">Video Title <span class="text-danger">*</span></label>
+                                                                <input type="text" class="form-control" 
+                                                                       [(ngModel)]="video.title" 
+                                                                       placeholder="Enter video title">
+                                                            </div>
+                                                            <div class="col-md-4">
+                                                                <label class="form-label">Duration (Minutes) <span class="text-danger">*</span></label>
+                                                                <input type="number" class="form-control" 
+                                                                       [(ngModel)]="video.duration" 
+                                                                       min="1" 
+                                                                       placeholder="Duration in minutes">
+                                                            </div>
+                                                            <div class="col-md-12">
+                                                                <label class="form-label">Video URL (Optional)</label>
+                                                                <input type="url" class="form-control" 
+                                                                       [(ngModel)]="video.videoUrl" 
+                                                                       placeholder="https://example.com/video">
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                }
+                                            </div>
+                                        </div>
+
+                                        <!-- Quiz Section -->
+                                        <div class="col-12">
+                                            <hr>
+                                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                                <h6 class="text-primary mb-0">
+                                                    <i class="fa fa-question-circle me-2"></i>Quiz/MCQ Questions
+                                                </h6>
+                                                <button type="button" class="btn btn-sm btn-outline-primary" (click)="addQuizQuestion()">
+                                                    <i class="fa fa-plus me-1"></i>Add Question
+                                                </button>
+                                            </div>
+                                            @if (courseForm.quizData.questions.length === 0) {
+                                                <div class="alert alert-info">
+                                                    <i class="fa fa-info-circle me-2"></i>No quiz questions added. Click "Add Question" to create a quiz.
+                                                </div>
+                                            } @else {
+                                                <div class="row g-3">
+                                                    @for (question of courseForm.quizData.questions; track $index; let i = $index) {
+                                                        <div class="col-12 border rounded p-3">
+                                                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                                                <h6 class="mb-0">Question {{ i + 1 }}</h6>
+                                                                <button type="button" class="btn btn-sm btn-outline-danger" (click)="removeQuizQuestion(i)">
+                                                                    <i class="fa fa-trash"></i>
+                                                                </button>
+                                                            </div>
+                                                            <div class="mb-3">
+                                                                <label class="form-label">Question <span class="text-danger">*</span></label>
+                                                                <input type="text" class="form-control" 
+                                                                       [(ngModel)]="question.question" 
+                                                                       placeholder="Enter question">
+                                                            </div>
+                                                            <div class="row g-2 mb-3">
+                                                                @for (option of question.options; track $index; let j = $index) {
+                                                                    <div class="col-md-6">
+                                                                        <div class="input-group">
+                                                                            <div class="input-group-text">
+                                                                                <input type="radio" 
+                                                                                       [name]="'correctAnswer' + i" 
+                                                                                       [value]="j" 
+                                                                                       [(ngModel)]="question.correctAnswer"
+                                                                                       [id]="'q' + i + 'opt' + j">
+                                                                            </div>
+                                                                            <input type="text" class="form-control" 
+                                                                                   [(ngModel)]="question.options[j]" 
+                                                                                   [placeholder]="'Option ' + (j + 1)">
+                                                                        </div>
+                                                                    </div>
+                                                                }
+                                                            </div>
+                                                            <div class="col-md-3">
+                                                                <label class="form-label">Points</label>
+                                                                <input type="number" class="form-control" 
+                                                                       [(ngModel)]="question.points" 
+                                                                       min="1" 
+                                                                       value="1">
+                                                            </div>
+                                                        </div>
+                                                    }
+                                                </div>
+                                            }
+                                        </div>
+
+                                        <div class="col-md-6">
+                                            <label class="form-label">Passing Marks (%)</label>
+                                            <input type="number" class="form-control" 
+                                                   [(ngModel)]="courseForm.passingMarks" 
+                                                   min="0" 
+                                                   max="100" 
+                                                   value="70">
+                                            <small class="text-muted">Default: 70%</small>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label class="form-label">Certificate Website Name</label>
+                                            <input type="text" class="form-control" 
+                                                   [(ngModel)]="courseForm.certificateWebsiteName" 
+                                                   value="ELearning">
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label class="form-label">Status</label>
+                                            <select class="form-select" [(ngModel)]="courseForm.status">
+                                                <option value="Draft">Draft</option>
+                                                <option value="Active">Active</option>
+                                                <option value="Inactive">Inactive</option>
+                                            </select>
+                                        </div>
+
+                                        <!-- Subscription Section -->
+                                        <div class="col-12 mt-3">
+                                            <hr>
+                                            <div class="form-check form-switch">
+                                                <input class="form-check-input" type="checkbox" id="enableSubscription"
+                                                       [(ngModel)]="courseForm.subscription.enabled">
+                                                <label class="form-check-label" for="enableSubscription">
+                                                    Add subscription plan for this course
+                                                </label>
+                                            </div>
+                                        </div>
+                                        @if (courseForm.subscription.enabled) {
+                                            <div class="col-md-4">
+                                                <label class="form-label">Plan</label>
+                                                <select class="form-select"
+                                                        [(ngModel)]="courseForm.subscription.plan"
+                                                        (ngModelChange)="onCourseSubscriptionPlanChange()">
+                                                    <option [ngValue]="''">Free</option>
+                                                    @for (plan of subscriptionPlans | slice:1; track plan.key) {
+                                                        <option [ngValue]="plan.key">{{ plan.label }}</option>
+                                                    }
+                                                </select>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <label class="form-label">Price (₹)</label>
+                                                <input type="number"
+                                                       class="form-control"
+                                                       [value]="courseForm.subscription.price"
+                                                       readonly>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <label class="form-label">Duration</label>
+                                                <input type="text" class="form-control"
+                                                       [(ngModel)]="courseForm.subscription.duration"
+                                                       placeholder="e.g. Monthly, Yearly">
+                                            </div>
+                                            <div class="col-12">
+                                                <label class="form-label">Subscription Description</label>
+                                                <input type="text" class="form-control"
+                                                       [(ngModel)]="courseForm.subscription.description"
+                                                       placeholder="Short description (optional)">
+                                            </div>
+                                        }
+                                    </div>
+                                    <div class="mt-3 d-flex gap-2">
+                                        <button class="btn btn-primary" (click)="saveCourse()" [disabled]="isLoading">
+                                            @if (isLoading) {
+                                                <span class="spinner-border spinner-border-sm me-2"></span>
+                                            } @else {
+                                                <i class="fa fa-save me-2"></i>
+                                            }
+                                            {{ isEditingCourse ? 'Update' : 'Create' }} Course
+                                        </button>
+                                        <button class="btn btn-secondary" (click)="closeCourseForm()" [disabled]="isLoading">
+                                            <i class="fa fa-times me-2"></i>Cancel
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+
+                        @if (isLoading && courses.length === 0 && !isCourseFormOpen) {
+                            <div class="text-center py-5">
+                                <div class="spinner-border text-primary" role="status">
+                                    <span class="visually-hidden">Loading...</span>
+                                </div>
+                                <p class="mt-3 text-muted">Loading courses...</p>
+                            </div>
+                        } @else if (courses.length === 0 && !isCourseFormOpen) {
+                            <div class="text-center py-5">
+                                <i class="fa fa-book fa-3x text-muted mb-3"></i>
+                                <p class="text-muted">No courses found.</p>
+                                <button class="btn btn-primary" (click)="openCourseForm()">
+                                    <i class="fa fa-plus me-2"></i>Add First Course
+                                </button>
+                            </div>
+                        } @else if (!isCourseFormOpen) {
+                            <div class="table-responsive">
+                                <table class="table table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th>Image</th>
+                                            <th>Course Name</th>
+                                            <th>Institute</th>
+                                            <th>Category</th>
+                                            <th>Mentor</th>
+                                            <th>Duration</th>
+                                            <th>Sessions</th>
+                                            <th>Status</th>
+                                            <th>Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @for (course of courses; track course.id) {
+                                            <tr>
+                                                <td>
+                                                    @if (course.image) {
+                                                        <img [src]="course.image" alt="{{ course.name }}" 
+                                                             class="rounded" 
+                                                             style="width: 50px; height: 50px; object-fit: cover;">
+                                                    } @else {
+                                                        <div class="bg-secondary rounded d-flex align-items-center justify-content-center" 
+                                                             style="width: 50px; height: 50px;">
+                                                            <i class="fa fa-book text-white"></i>
+                                                        </div>
+                                                    }
+                                                </td>
+                                                <td><strong>{{ course.name }}</strong></td>
+                                                <td>{{ course.instituteName }}</td>
+                                                <td><span class="badge bg-info">{{ course.categoryName }}</span></td>
+                                                <td>{{ course.mentorName }}</td>
+                                                <td>{{ course.duration }} hrs</td>
+                                                <td>{{ course.numberOfSessions }}</td>
+                                                <td>
+                                                    @if (course.status === 'Active') {
+                                                        <span class="badge bg-success">{{ course.status }}</span>
+                                                    } @else if (course.status === 'Draft') {
+                                                        <span class="badge bg-warning">{{ course.status }}</span>
+                                                    } @else {
+                                                        <span class="badge bg-secondary">{{ course.status }}</span>
+                                                    }
+                                                </td>
+                                                <td>
+                                                    <button class="btn btn-sm btn-outline-primary me-2" (click)="openCourseForm(course)">
+                                                        <i class="fa fa-edit"></i> Edit
+                                                    </button>
+                                                    <button class="btn btn-sm btn-outline-danger" (click)="deleteCourse(course.id)" [disabled]="isLoading">
+                                                        <i class="fa fa-trash"></i> Delete
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="mt-3">
+                                <p class="text-muted small">Total Courses: <strong>{{ courses.length }}</strong></p>
+                            </div>
+                        }
+                    </div>
+                }
+
+                <!-- Subscriptions Tab -->
+                @if (activeTab === 'subscriptions') {
+                    <div class="tab-content">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <h5 class="mb-0"><i class="fa fa-credit-card me-2 text-primary"></i>Subscription Management</h5>
+                            <div class="d-flex gap-2">
+                                <button class="btn btn-sm btn-outline-primary" (click)="loadSubscriptions()" [disabled]="isLoading">
+                                    <i class="fa fa-sync me-2" [class.fa-spin]="isLoading"></i>Refresh
+                                </button>
+                                <button class="btn btn-sm btn-primary" (click)="openSubscriptionForm()">
+                                    <i class="fa fa-plus me-2"></i>Add Plan
+                                </button>
+                            </div>
+                        </div>
+                        @if (errorMessage) {
+                            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                                {{ errorMessage }}
+                                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                            </div>
+                        }
+                        @if (successMessage) {
+                            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                                {{ successMessage }}
+                                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                            </div>
+                        }
+
+                        @if (isSubscriptionFormOpen) {
+                            <div class="card shadow-sm border-primary mb-4">
+                                <div class="card-header bg-primary text-white">
+                                    <h6 class="mb-0">
+                                        <i class="fa fa-{{ isEditingSubscription ? 'edit' : 'plus' }} me-2"></i>
+                                        {{ isEditingSubscription ? 'Edit' : 'Add' }} Subscription Plan
+                                    </h6>
+                                </div>
+                                <div class="card-body">
+                                    <div class="row g-3">
+                                        <div class="col-md-6">
+                                            <label class="form-label">Course <span class="text-danger">*</span></label>
+                                            <select class="form-select" [(ngModel)]="subscriptionForm.courseId">
+                                                <option value="">Select Course</option>
+                                                @for (course of courses; track course.id) {
+                                                    <option [value]="course.id">
+                                                        {{ course.name }} - {{ course.instituteName }}
+                                                    </option>
+                                                }
+                                            </select>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label class="form-label">Plan Name <span class="text-danger">*</span></label>
+                                            <input type="text" class="form-control"
+                                                   [(ngModel)]="subscriptionForm.plan"
+                                                   placeholder="e.g. Basic, Premium">
+                                        </div>
+                                        <div class="col-md-4">
+                                            <label class="form-label">Price <span class="text-danger">*</span></label>
+                                            <input type="number" class="form-control"
+                                                   [(ngModel)]="subscriptionForm.price"
+                                                   min="0" step="0.01"
+                                                   placeholder="Price">
+                                        </div>
+                                        <div class="col-md-4">
+                                            <label class="form-label">Duration <span class="text-danger">*</span></label>
+                                            <input type="text" class="form-control"
+                                                   [(ngModel)]="subscriptionForm.duration"
+                                                   placeholder="e.g. Monthly, Yearly">
+                                        </div>
+                                        <div class="col-md-4">
+                                            <label class="form-label">Description</label>
+                                            <input type="text" class="form-control"
+                                                   [(ngModel)]="subscriptionForm.description"
+                                                   placeholder="Short description (optional)">
+                                        </div>
+                                    </div>
+                                    <div class="mt-3 d-flex gap-2">
+                                        <button class="btn btn-primary" (click)="saveSubscription()" [disabled]="isLoading">
+                                            @if (isLoading) {
+                                                <span class="spinner-border spinner-border-sm me-2"></span>
+                                            } @else {
+                                                <i class="fa fa-save me-2"></i>
+                                            }
+                                            {{ isEditingSubscription ? 'Update' : 'Create' }} Plan
+                                        </button>
+                                        <button class="btn btn-secondary" (click)="closeSubscriptionForm()" [disabled]="isLoading">
+                                            <i class="fa fa-times me-2"></i>Cancel
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+
+                        @if (isLoading && subscriptions.length === 0 && !isSubscriptionFormOpen) {
+                            <div class="text-center py-5">
+                                <div class="spinner-border text-primary" role="status">
+                                    <span class="visually-hidden">Loading...</span>
+                                </div>
+                                <p class="mt-3 text-muted">Loading subscriptions...</p>
+                            </div>
+                        } @else if (subscriptions.length === 0 && !isSubscriptionFormOpen) {
+                            <div class="text-center py-5">
+                                <i class="fa fa-credit-card fa-3x text-muted mb-3"></i>
+                                <p class="text-muted">No subscriptions found.</p>
+                                <button class="btn btn-primary" (click)="openSubscriptionForm()">
+                                    <i class="fa fa-plus me-2"></i>Add First Plan
+                                </button>
+                            </div>
+                        } @else {
+                            <div class="row g-4 mb-4">
+                                @for (subscription of subscriptions; track subscription.id) {
+                                    <div class="col-md-4">
+                                        <div class="card shadow-sm border-0 h-100">
+                                            <div class="card-body">
+                                                <h5 class="card-title">{{ subscription.plan }} Plan</h5>
+                                                <h3 class="text-primary">${{ subscription.price }}/{{ subscription.duration }}</h3>
+                                                <p class="text-muted mb-1" *ngIf="subscription.courseName">
+                                                    <i class="fa fa-book me-1 text-primary"></i>
+                                                    {{ subscription.courseName }}
+                                                </p>
+                                                <p class="text-muted mb-1" *ngIf="subscription.instituteName">
+                                                    <i class="fa fa-building me-1 text-primary"></i>
+                                                    {{ subscription.instituteName }}
+                                                </p>
+                                                <p class="text-muted mb-3">
+                                                    {{ subscription.activeUsers || 0 }} Active Users
+                                                </p>
+                                                <p class="small text-muted" *ngIf="subscription.description">
+                                                    {{ subscription.description }}
+                                                </p>
+                                                <div class="d-flex gap-2">
+                                                    <button class="btn btn-sm btn-outline-primary flex-fill" (click)="openSubscriptionForm(subscription)">
+                                                        <i class="fa fa-edit me-2"></i>Edit
+                                                    </button>
+                                                    <button class="btn btn-sm btn-outline-danger flex-fill" (click)="deleteSubscription(subscription.id)" [disabled]="isLoading">
+                                                        <i class="fa fa-trash me-2"></i>Delete
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                }
+                            </div>
+                            <div class="card shadow-sm border-0">
+                                <div class="card-header bg-light">
+                                    <h6 class="mb-0">Active Subscriptions Overview</h6>
+                                </div>
+                                <div class="card-body">
+                                    <div class="table-responsive">
+                                        <table class="table table-sm">
+                                            <thead>
+                                                <tr>
+                                                    <th>Plan</th>
+                                                    <th>Course</th>
+                                                    <th>Price</th>
+                                                    <th>Active Users</th>
+                                                    <th>Revenue</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @for (subscription of subscriptions; track subscription.id) {
+                                                    <tr>
+                                                        <td>{{ subscription.plan }}</td>
+                                                        <td>{{ subscription.courseName || 'N/A' }}</td>
+                                                        <td>${{ subscription.price }}</td>
+                                                        <td>{{ subscription.activeUsers || 0 }}</td>
+                                                        <td>${{ subscription.price * (subscription.activeUsers || 0) }}</td>
+                                                    </tr>
+                                                }
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                }
+
+                <!-- Books Tab -->
+                @if (activeTab === 'books') {
+                    <div class="tab-content">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <h5 class="mb-0"><i class="fa fa-book-open me-2 text-primary"></i>Book Management</h5>
+                            <div class="d-flex gap-2">
+                                <button class="btn btn-sm btn-outline-primary" (click)="loadBooks()" [disabled]="isLoading">
+                                    <i class="fa fa-sync me-2" [class.fa-spin]="isLoading"></i>Refresh
+                                </button>
+                                <button class="btn btn-sm btn-primary" (click)="openBookForm()">
+                                    <i class="fa fa-plus me-2"></i>Add Book
+                                </button>
+                            </div>
+                        </div>
+                        @if (errorMessage) {
+                            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                                {{ errorMessage }}
+                                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                            </div>
+                        }
+                        @if (successMessage) {
+                            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                                {{ successMessage }}
+                                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                            </div>
+                        }
+
+                        @if (isBookFormOpen) {
+                            <div class="card shadow-sm border-primary mb-4">
+                                <div class="card-header bg-primary text-white">
+                                    <h6 class="mb-0">
+                                        <i class="fa fa-plus me-2"></i>Add Book (PDF)
+                                    </h6>
+                                </div>
+                                <div class="card-body">
+                                    <div class="row g-3">
+                                        <div class="col-md-6">
+                                            <label class="form-label">Title <span class="text-danger">*</span></label>
+                                            <input type="text" class="form-control"
+                                                   [(ngModel)]="bookForm.title"
+                                                   placeholder="Enter book title">
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label class="form-label">Author <span class="text-danger">*</span></label>
+                                            <input type="text" class="form-control"
+                                                   [(ngModel)]="bookForm.author"
+                                                   placeholder="Enter author name">
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label class="form-label">Category</label>
+                                            <input type="text" class="form-control"
+                                                   [(ngModel)]="bookForm.category"
+                                                   placeholder="e.g. Programming, Design">
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label class="form-label">PDF File <span class="text-danger">*</span></label>
+                                            <input type="file"
+                                                   class="form-control"
+                                                   accept="application/pdf"
+                                                   (change)="onBookFileSelected($event)">
+                                            <small class="text-muted">Only PDF files, max 10MB.</small>
+                                        </div>
+                                        <div class="col-12">
+                                            <label class="form-label">Description</label>
+                                            <textarea class="form-control" rows="3"
+                                                      [(ngModel)]="bookForm.description"
+                                                      placeholder="Short description of the book"></textarea>
+                                        </div>
+                                    </div>
+                                    <div class="mt-3 d-flex gap-2">
+                                        <button class="btn btn-primary" (click)="saveBook()" [disabled]="isLoading || isAddingBook">
+                                            @if (isAddingBook) {
+                                                <span class="spinner-border spinner-border-sm me-2"></span>
+                                            } @else {
+                                                <i class="fa fa-save me-2"></i>
+                                            }
+                                            Save Book
+                                        </button>
+                                        <button class="btn btn-secondary" (click)="closeBookForm()" [disabled]="isLoading || isAddingBook">
+                                            <i class="fa fa-times me-2"></i>Cancel
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+
+                        @if (isLoading && books.length === 0 && !isBookFormOpen) {
+                            <div class="text-center py-5">
+                                <div class="spinner-border text-primary" role="status">
+                                    <span class="visually-hidden">Loading...</span>
+                                </div>
+                                <p class="mt-3 text-muted">Loading books...</p>
+                            </div>
+                        } @else if (books.length === 0 && !isBookFormOpen) {
+                            <div class="text-center py-5">
+                                <i class="fa fa-book-open fa-3x text-muted mb-3"></i>
+                                <p class="text-muted">No books found.</p>
+                                <button class="btn btn-primary" (click)="openBookForm()">
+                                    <i class="fa fa-plus me-2"></i>Add First Book
+                                </button>
+                            </div>
+                        } @else if (!isBookFormOpen) {
+                            <div class="table-responsive">
+                                <table class="table table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th>Title</th>
+                                            <th>Author</th>
+                                            <th>Category</th>
+                                            <th>Added On</th>
+                                            <th>Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @for (book of books; track book.id) {
+                                            <tr>
+                                                <td><strong>{{ book.title }}</strong></td>
+                                                <td>{{ book.author }}</td>
+                                                <td>
+                                                    @if (book.category) {
+                                                        <span class="badge bg-secondary">{{ book.category }}</span>
+                                                    } @else {
+                                                        <small class="text-muted">N/A</small>
+                                                    }
+                                                </td>
+                                                <td>{{ formatDate(book.createdAt) }}</td>
+                                                <td>
+                                                    <button class="btn btn-sm btn-outline-danger" (click)="deleteBook(book.id)" [disabled]="isLoading">
+                                                        <i class="fa fa-trash"></i> Delete
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+                        }
+                    </div>
+                }
+
+                <!-- Contacts Tab -->
+                @if (activeTab === 'contacts') {
+                    <div class="tab-content">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <h5 class="mb-0"><i class="fa fa-envelope me-2 text-primary"></i>Contact Management</h5>
+                            <button class="btn btn-sm btn-outline-primary" (click)="loadContacts()" [disabled]="isLoading">
+                                <i class="fa fa-sync me-2" [class.fa-spin]="isLoading"></i>Refresh
+                            </button>
+                        </div>
+                        @if (errorMessage) {
+                            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                                {{ errorMessage }}
+                                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                            </div>
+                        }
+                        @if (isLoading && contacts.length === 0) {
+                            <div class="text-center py-5">
+                                <div class="spinner-border text-primary" role="status">
+                                    <span class="visually-hidden">Loading...</span>
+                                </div>
+                                <p class="mt-3 text-muted">Loading contact messages...</p>
+                            </div>
+                        } @else if (contacts.length === 0) {
+                            <div class="text-center py-5">
+                                <i class="fa fa-envelope-open fa-3x text-muted mb-3"></i>
+                                <p class="text-muted">No contact messages found.</p>
+                            </div>
+                        } @else {
+                            <div class="table-responsive">
+                                <table class="table table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th>ID</th>
+                                            <th>Name</th>
+                                            <th>Email</th>
+                                            <th>Subject</th>
+                                            <th>Date</th>
+                                            <th>Status</th>
+                                            <th>Admin Reply</th>
+                                            <th>Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @for (contact of contacts; track contact.id) {
+                                            <tr>
+                                                <td><small class="text-muted font-monospace">{{ contact.id }}</small></td>
+                                                <td>{{ contact.name }}</td>
+                                                <td>{{ contact.email }}</td>
+                                                <td>{{ contact.subject }}</td>
+                                                <td>{{ contact.createdAt | date: 'medium' }}</td>
+                                                <td>
+                                                    @if (contact.status === 'Pending') {
+                                                        <span class="badge bg-warning text-dark">{{ contact.status }}</span>
+                                                    } @else if (contact.status === 'Answered') {
+                                                        <span class="badge bg-success">{{ contact.status }}</span>
+                                                    } @else {
+                                                        <span class="badge bg-secondary">{{ contact.status }}</span>
+                                                    }
+                                                </td>
+                                                <td style="max-width: 250px;">
+                                                    @if (contact.adminReply) {
+                                                        <small class="text-muted">{{ contact.adminReply }}</small><br>
+                                                        @if (contact.repliedAt) {
+                                                            <small class="text-muted">Replied: {{ contact.repliedAt | date: 'short' }}</small>
+                                                        }
+                                                    } @else {
+                                                        <small class="text-muted">No reply yet</small>
+                                                    }
+                                                </td>
+                                                <td>
+                                                    <button class="btn btn-sm btn-outline-success"
+                                                            (click)="respondToContact(contact)"
+                                                            [disabled]="replyLoading[contact.id]">
+                                                        @if (replyLoading[contact.id]) {
+                                                            <span class="spinner-border spinner-border-sm me-1"></span>
+                                                        } @else {
+                                                            <i class="fa fa-reply me-1"></i>
+                                                        }
+                                                        Respond
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+                        }
+                    </div>
+                }
+
+                <!-- Certificates Tab -->
+                @if (activeTab === 'certificates') {
+                    <div class="tab-content">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <h5 class="mb-0"><i class="fa fa-certificate me-2 text-primary"></i>Certificates Management</h5>
+                            <button class="btn btn-sm btn-outline-primary" (click)="loadCertificates()" [disabled]="isLoading">
+                                <i class="fa fa-sync me-2" [class.fa-spin]="isLoading"></i>Refresh
+                            </button>
+                        </div>
+                        
+                        @if (errorMessage) {
+                            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                                {{ errorMessage }}
+                                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                            </div>
+                        }
+
+                        @if (isLoading && certificates.length === 0) {
+                            <div class="text-center py-5">
+                                <div class="spinner-border text-primary" role="status">
+                                    <span class="visually-hidden">Loading...</span>
+                                </div>
+                                <p class="mt-3 text-muted">Loading certificates...</p>
+                            </div>
+                        } @else if (certificates.length === 0) {
+                            <div class="text-center py-5">
+                                <i class="fa fa-certificate fa-3x text-muted mb-3"></i>
+                                <p class="text-muted">No certificates found.</p>
+                            </div>
+                        } @else {
+                            <div class="table-responsive">
+                                <table class="table table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th>Certificate #</th>
+                                            <th>Student Name</th>
+                                            <th>Course Name</th>
+                                            <th>Institute</th>
+                                            <th>Issue Date</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @for (certificate of certificates; track certificate.id) {
+                                            <tr>
+                                                <td><small class="text-muted font-monospace">{{ certificate.certificateNumber }}</small></td>
+                                                <td><strong>{{ certificate.userName }}</strong><br><small class="text-muted">{{ certificate.userEmail }}</small></td>
+                                                <td>{{ certificate.courseName }}</td>
+                                                <td>{{ certificate.instituteName }}</td>
+                                                <td>{{ formatDate(certificate.issueDate) }}</td>
+                                            </tr>
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+                        }
+                    </div>
+                }
+
+                <!-- Feedback Tab -->
+                @if (activeTab === 'feedback') {
+                    <div class="tab-content">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <h5 class="mb-0"><i class="fa fa-comments me-2 text-primary"></i>Feedback Management</h5>
+                            <button class="btn btn-sm btn-outline-primary" (click)="loadReviews()" [disabled]="isLoading">
+                                <i class="fa fa-sync me-2" [class.fa-spin]="isLoading"></i>Refresh
+                            </button>
+                        </div>
+                        
+                        @if (errorMessage) {
+                            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                                {{ errorMessage }}
+                                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                            </div>
+                        }
+
+                        @if (isLoading && reviews.length === 0) {
+                            <div class="text-center py-5">
+                                <div class="spinner-border text-primary" role="status">
+                                    <span class="visually-hidden">Loading...</span>
+                                </div>
+                                <p class="mt-3 text-muted">Loading feedback...</p>
+                            </div>
+                        } @else if (reviews.length === 0) {
+                            <div class="text-center py-5">
+                                <i class="fa fa-comments fa-3x text-muted mb-3"></i>
+                                <p class="text-muted">No feedback found.</p>
+                            </div>
+                        } @else {
+                            <div class="row g-4">
+                                @for (review of reviews; track review.id) {
+                                    <div class="col-md-6">
+                                        <div class="card shadow-sm border-0 h-100">
+                                            <div class="card-body">
+                                                <div class="d-flex justify-content-between align-items-start mb-3">
+                                                    <div>
+                                                        <h6 class="mb-1">{{ review.userName }}</h6>
+                                                        <p class="text-muted small mb-0">{{ review.courseName }}</p>
+                                                        <small class="text-muted">{{ review.instituteName }}</small>
+                                                    </div>
+                                                    <div class="text-end">
+                                                        @for (star of [1,2,3,4,5]; track star) {
+                                                            @if (star <= review.rating) {
+                                                                <i class="fa fa-star text-warning"></i>
+                                                            } @else {
+                                                                <i class="fa fa-star text-muted"></i>
+                                                            }
+                                                        }
+                                                    </div>
+                                                </div>
+                                                <p class="mb-2">{{ review.comment || 'No comment provided' }}</p>
+                                                <small class="text-muted">{{ formatDate(review.createdAt) }}</small>
+                                            </div>
+                                        </div>
+                                    </div>
+                                }
+                            </div>
+                            <div class="mt-4">
+                                <h6>Feedback Statistics</h6>
+                                <div class="row g-3">
+                                    <div class="col-md-3">
+                                        <div class="card shadow-sm border-0">
+                                            <div class="card-body text-center">
+                                                <h4 class="text-primary mb-0">{{ reviews.length }}</h4>
+                                                <small class="text-muted">Total Feedback</small>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="card shadow-sm border-0">
+                                            <div class="card-body text-center">
+                                                <h4 class="text-success mb-0">{{ getAverageRating() }}</h4>
+                                                <small class="text-muted">Average Rating</small>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                }
+
+                <!-- Course Categories Tab -->
+                @if (activeTab === 'course-categories') {
+                    <div class="tab-content">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <h5 class="mb-0"><i class="fa fa-folder me-2 text-primary"></i>Course Categories Management</h5>
+                            <button class="btn btn-sm btn-primary" (click)="openCategoryForm()">
+                                <i class="fa fa-plus me-2"></i>Add Category
+                            </button>
+                        </div>
+
+                        @if (errorMessage) {
+                            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                                {{ errorMessage }}
+                                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                            </div>
+                        }
+
+                        @if (successMessage) {
+                            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                                {{ successMessage }}
+                                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                            </div>
+                        }
+
+                        @if (isCategoryFormOpen) {
+                            <div class="card shadow-sm border-primary mb-4">
+                                <div class="card-header bg-primary text-white">
+                                    <h6 class="mb-0">
+                                        <i class="fa fa-{{ isEditingCategory ? 'edit' : 'plus' }} me-2"></i>
+                                        {{ isEditingCategory ? 'Edit' : 'Add' }} Course Category
+                                    </h6>
+                                </div>
+                                <div class="card-body">
+                                    <div class="row g-3">
+                                        <div class="col-md-6">
+                                            <label class="form-label">Category Name <span class="text-danger">*</span></label>
+                                            <input type="text" class="form-control" 
+                                                   [(ngModel)]="categoryForm.name" 
+                                                   placeholder="Enter category name">
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label class="form-label">Category Image</label>
+                                            <input type="file" 
+                                                   class="form-control" 
+                                                   accept="image/jpeg,image/jpg,image/png,image/gif,image/webp"
+                                                   (change)="onCategoryImageSelected($event)">
+                                            <small class="text-muted">Max size: 5MB. Supported formats: JPEG, PNG, GIF, WEBP</small>
+                                        </div>
+                                        @if (categoryImagePreview) {
+                                            <div class="col-12">
+                                                <label class="form-label">Image Preview</label>
+                                                <div>
+                                                    <img [src]="categoryImagePreview" alt="Category Preview" 
+                                                         class="img-thumbnail" 
+                                                         style="max-width: 200px; max-height: 200px; object-fit: cover;">
+                                                </div>
+                                            </div>
+                                        }
+                                    </div>
+                                    <div class="mt-3 d-flex gap-2">
+                                        <button class="btn btn-primary" (click)="saveCategory()" [disabled]="isLoading || !categoryForm.name.trim()">
+                                            @if (isLoading) {
+                                                <span class="spinner-border spinner-border-sm me-2"></span>
+                                            } @else {
+                                                <i class="fa fa-save me-2"></i>
+                                            }
+                                            {{ isEditingCategory ? 'Update' : 'Create' }} Category
+                                        </button>
+                                        <button class="btn btn-secondary" (click)="closeCategoryForm()" [disabled]="isLoading">
+                                            <i class="fa fa-times me-2"></i>Cancel
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        }
+
+                        @if (isLoading && courseCategories.length === 0 && !isCategoryFormOpen) {
+                            <div class="text-center py-5">
+                                <div class="spinner-border text-primary" role="status">
+                                    <span class="visually-hidden">Loading...</span>
+                                </div>
+                                <p class="mt-3 text-muted">Loading categories...</p>
+                            </div>
+                        } @else if (courseCategories.length === 0) {
+                            <div class="text-center py-5">
+                                <i class="fa fa-folder fa-3x text-muted mb-3"></i>
+                                <p class="text-muted">No course categories found.</p>
+                                <button class="btn btn-primary" (click)="openCategoryForm()">
+                                    <i class="fa fa-plus me-2"></i>Add First Category
+                                </button>
+                            </div>
+                        } @else {
+                            <div class="row g-4">
+                                @for (category of courseCategories; track category.id) {
+                                    <div class="col-md-6 col-lg-4">
+                                        <div class="card shadow-sm border-0 h-100">
+                                            <div class="card-body">
+                                                <div class="text-center mb-3">
+                                                    @if (category.image) {
+                                                        <img [src]="category.image" alt="{{ category.name }}" 
+                                                             class="img-fluid rounded mb-2" 
+                                                             style="max-height: 150px; width: 100%; object-fit: cover;">
+                                                    } @else {
+                                                        <div class="bg-secondary rounded d-flex align-items-center justify-content-center mb-2" 
+                                                             style="height: 150px;">
+                                                            <i class="fa fa-folder fa-4x text-white"></i>
+                                                        </div>
+                                                    }
+                                                </div>
+                                                <h5 class="card-title text-center mb-2">{{ category.name }}</h5>
+                                                <div class="text-center mb-3">
+                                                    <span class="badge bg-primary fs-6">
+                                                        <i class="fa fa-book me-1"></i>
+                                                        {{ category.numberOfCourses || 0 }} Course{{ (category.numberOfCourses || 0) !== 1 ? 's' : '' }}
+                                                    </span>
+                                                </div>
+                                                <div class="d-flex gap-2">
+                                                    <button class="btn btn-sm btn-outline-primary flex-fill" 
+                                                            (click)="openCategoryForm(category)">
+                                                        <i class="fa fa-edit me-1"></i>Edit
+                                                    </button>
+                                                    <button class="btn btn-sm btn-outline-danger flex-fill" 
+                                                            (click)="deleteCategory(category.id)" 
+                                                            [disabled]="isLoading">
+                                                        <i class="fa fa-trash me-1"></i>Delete
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                }
+                            </div>
+                            <div class="mt-3">
+                                <p class="text-muted small">Total Categories: <strong>{{ courseCategories.length }}</strong></p>
+                            </div>
+                        }
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Admin Dashboard End -->
+
+<!-- Footer Start -->
+<div class="container-fluid bg-dark text-light footer pt-5 mt-5">
+    <div class="container py-5">
+        <div class="row g-5">
+            <div class="col-lg-3 col-md-6">
+                <h4 class="text-white mb-3">Quick Link</h4>
+                <a class="btn btn-link" routerLink="/dashboard">User Dashboard</a>
+            </div>
+            <div class="col-lg-3 col-md-6">
+                <h4 class="text-white mb-3">Contact</h4>
+                <p class="mb-2"><i class="fa fa-map-marker-alt me-3"></i>123 Street, New York, USA</p>
+                <p class="mb-2"><i class="fa fa-phone-alt me-3"></i>+012 345 67890</p>
+                <p class="mb-2"><i class="fa fa-envelope me-3"></i>info&#64;example.com</p>
+            </div>
+        </div>
+    </div>
+    <div class="container">
+        <div class="copyright">
+            <div class="row">
+                <div class="col-md-6 text-center text-md-start mb-3 mb-md-0">
+                    &copy; <a class="border-bottom" href="#">eLEARNING Admin</a>, All Right Reserved.
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Footer End -->

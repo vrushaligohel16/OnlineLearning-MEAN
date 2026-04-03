@@ -1,0 +1,365 @@
+<!-- Navbar Start -->
+<nav class="navbar navbar-expand-lg bg-white navbar-light shadow sticky-top p-0">
+    <a routerLink="/dashboard" class="navbar-brand d-flex align-items-center px-4 px-lg-5">
+        <h2 class="m-0 text-primary"><i class="fa fa-book me-3"></i>eLEARNING</h2>
+    </a>
+    <button type="button" class="navbar-toggler me-4" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarCollapse">
+        <div class="navbar-nav ms-auto p-4 p-lg-0">
+            <a routerLink="/dashboard" class="nav-item nav-link">Home</a>
+            <a routerLink="/profile" class="nav-item nav-link active">Profile</a>
+            <a routerLink="/courses" class="nav-item nav-link">Courses</a>
+            <a routerLink="/contact" class="nav-item nav-link">Contact</a>
+        </div>
+        <a routerLink="/profile" class="btn btn-outline-primary py-4 px-lg-5 d-none d-lg-block" title="Settings">
+            <i class="fa fa-cog me-2"></i>Settings
+        </a>
+        <a routerLink="/profile" class="btn btn-outline-primary py-3 px-4 d-lg-none ms-3" title="Settings">
+            <i class="fa fa-cog me-2"></i>Settings
+        </a>
+    </div>
+</nav>
+<!-- Navbar End -->
+
+<!-- Profile Section Start -->
+<div class="container-xxl py-5">
+    <div class="container">
+        <div class="row g-5">
+            <!-- Sidebar -->
+            <div class="col-lg-3">
+                <div class="card shadow-sm">
+                    <div class="card-body text-center">
+                        <div class="mb-3">
+                            @if (profile?.image || imagePreview) {
+                                <img [src]="imagePreview || profile?.image" alt="Profile Picture" 
+                                     class="rounded-circle border border-primary" 
+                                     style="width: 100px; height: 100px; object-fit: cover;">
+                            } @else {
+                                <div class="bg-primary rounded-circle d-inline-flex align-items-center justify-content-center" style="width: 100px; height: 100px;">
+                                    <i class="fa fa-user fa-3x text-white"></i>
+                                </div>
+                            }
+                        </div>
+                        <h5 class="mb-1">{{ profile?.name || user?.name || 'User' }}</h5>
+                        <p class="text-muted mb-3">{{ profile?.email || user?.email || '' }}</p>
+                        <div class="d-grid gap-2">
+                            <button class="btn btn-outline-primary" routerLink="/dashboard">
+                                <i class="fa fa-home me-2"></i>Dashboard
+                            </button>
+                            <button class="btn btn-danger" (click)="logout()">
+                                <i class="fa fa-sign-out-alt me-2"></i>Logout
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Main Content -->
+            <div class="col-lg-9">
+                <!-- Personal Information Section -->
+                <div class="card shadow-sm mb-4">
+                    <div class="card-header bg-white d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0"><i class="fa fa-user me-2 text-primary"></i>Personal Information</h5>
+                        @if (!isEditing) {
+                            <button class="btn btn-sm btn-primary" (click)="toggleEdit()">
+                                <i class="fa fa-edit me-2"></i>Edit
+                            </button>
+                        }
+                    </div>
+                    <div class="card-body">
+                        @if (isLoading) {
+                            <div class="text-center py-3">
+                                <div class="spinner-border text-primary" role="status">
+                                    <span class="visually-hidden">Loading...</span>
+                                </div>
+                            </div>
+                        }
+                        @if (successMessage) {
+                            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                                {{ successMessage }}
+                                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                            </div>
+                        }
+                        @if (errorMessage) {
+                            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                                {{ errorMessage }}
+                                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                            </div>
+                        }
+
+                        <form [formGroup]="profileForm" (ngSubmit)="saveProfile()">
+                            <div class="row g-3">
+                                <!-- Profile Image Upload -->
+                                <div class="col-12">
+                                    <label class="form-label">Profile Picture</label>
+                                    <div class="d-flex align-items-center gap-3 mb-3">
+                                        @if (imagePreview || profile?.image) {
+                                            <img [src]="imagePreview || profile?.image" alt="Profile Preview" 
+                                                 class="rounded-circle border" 
+                                                 style="width: 80px; height: 80px; object-fit: cover;">
+                                        } @else {
+                                            <div class="bg-secondary rounded-circle d-inline-flex align-items-center justify-content-center" style="width: 80px; height: 80px;">
+                                                <i class="fa fa-user fa-2x text-white"></i>
+                                            </div>
+                                        }
+                                        @if (isEditing) {
+                                            <div class="flex-grow-1">
+                                                <input type="file" 
+                                                       class="form-control" 
+                                                       accept="image/jpeg,image/jpg,image/png,image/gif,image/webp"
+                                                       (change)="onImageSelected($event)">
+                                                <small class="text-muted">Max size: 5MB. Supported formats: JPEG, PNG, GIF, WEBP</small>
+                                            </div>
+                                        }
+                                    </div>
+                                </div>
+                                
+                                <div class="col-md-6">
+                                    <label class="form-label">Full Name <span class="text-danger">*</span></label>
+                                    @if (isEditing) {
+                                        <input type="text" class="form-control" formControlName="name" [class.is-invalid]="profileForm.get('name')?.invalid && profileForm.get('name')?.touched">
+                                        @if (profileForm.get('name')?.invalid && profileForm.get('name')?.touched) {
+                                            <div class="invalid-feedback">Name is required and must be at least 3 characters</div>
+                                        }
+                                    } @else {
+                                        <p class="form-control-plaintext">{{ profile?.name || user?.name || 'Not set' }}</p>
+                                    }
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label">Email <span class="text-danger">*</span></label>
+                                    @if (isEditing) {
+                                        <input type="email" class="form-control" formControlName="email" [class.is-invalid]="profileForm.get('email')?.invalid && profileForm.get('email')?.touched">
+                                        @if (profileForm.get('email')?.invalid && profileForm.get('email')?.touched) {
+                                            <div class="invalid-feedback">Please enter a valid email</div>
+                                        }
+                                    } @else {
+                                        <p class="form-control-plaintext">{{ profile?.email || user?.email || 'Not set' }}</p>
+                                    }
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label">Phone</label>
+                                    @if (isEditing) {
+                                        <input type="tel" class="form-control" formControlName="phone">
+                                    } @else {
+                                        <p class="form-control-plaintext">{{ profile?.phone || 'Not set' }}</p>
+                                    }
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label">Address</label>
+                                    @if (isEditing) {
+                                        <input type="text" class="form-control" formControlName="address">
+                                    } @else {
+                                        <p class="form-control-plaintext">{{ profile?.address || 'Not set' }}</p>
+                                    }
+                                </div>
+                                <div class="col-12">
+                                    <label class="form-label">Bio</label>
+                                    @if (isEditing) {
+                                        <textarea class="form-control" rows="4" formControlName="bio" placeholder="Tell us about yourself..."></textarea>
+                                    } @else {
+                                        <p class="form-control-plaintext">{{ profile?.bio || 'No bio available' }}</p>
+                                    }
+                                </div>
+                            </div>
+
+                            @if (isEditing) {
+                                <div class="mt-4 d-flex gap-2">
+                                    <button type="submit" class="btn btn-primary" [disabled]="profileForm.invalid || isLoading">
+                                        @if (isLoading) {
+                                            <span class="spinner-border spinner-border-sm me-2"></span>
+                                        } @else {
+                                            <i class="fa fa-save me-2"></i>
+                                        }
+                                        Save Changes
+                                    </button>
+                                    <button type="button" class="btn btn-secondary" (click)="toggleEdit()" [disabled]="isLoading">
+                                        <i class="fa fa-times me-2"></i>Cancel
+                                    </button>
+                                </div>
+                            }
+                        </form>
+                    </div>
+                </div>
+
+                <!-- My Purchases Section -->
+                <div class="card shadow-sm mb-4">
+                    <div class="card-header bg-white">
+                        <h5 class="mb-0"><i class="fa fa-shopping-cart me-2 text-primary"></i>My Purchases</h5>
+                    </div>
+                    <div class="card-body">
+                        @if (purchasedCourses.length === 0) {
+                            <div class="text-center py-5">
+                                <i class="fa fa-shopping-bag fa-3x text-muted mb-3"></i>
+                                <p class="text-muted mb-2">You have not purchased any courses yet.</p>
+                                <a routerLink="/dashboard" class="btn btn-primary">
+                                    <i class="fa fa-search me-2"></i>Browse Premium Courses
+                                </a>
+                            </div>
+                        } @else {
+                            <div class="row g-4">
+                                @for (purchase of purchasedCourses; track purchase.invoiceId) {
+                                    <div class="col-md-6 col-lg-4">
+                                        <div class="card h-100 border-primary">
+                                            @if (purchase.courseImage) {
+                                                <img [src]="purchase.courseImage"
+                                                     class="card-img-top"
+                                                     [alt]="purchase.courseName"
+                                                     style="height: 150px; object-fit: cover;">
+                                            } @else {
+                                                <div class="card-img-top bg-secondary d-flex align-items-center justify-content-center"
+                                                     style="height: 150px;">
+                                                    <i class="fa fa-book fa-3x text-white"></i>
+                                                </div>
+                                            }
+                                            <div class="card-body">
+                                                <h6 class="card-title">{{ purchase.courseName }}</h6>
+                                                <p class="text-muted small mb-1" *ngIf="purchase.instituteName">
+                                                    <i class="fa fa-building me-1"></i>{{ purchase.instituteName }}
+                                                </p>
+                                                <p class="text-muted small mb-1">
+                                                    <i class="fa fa-crown me-1 text-warning"></i>{{ purchase.plan }}
+                                                </p>
+                                                <p class="text-muted small mb-1">
+                                                    <i class="fa fa-rupee-sign me-1"></i>{{ purchase.amount }}
+                                                </p>
+                                                <p class="text-muted small mb-1" *ngIf="purchase.paymentMethod">
+                                                    <i class="fa fa-credit-card me-1"></i>{{ purchase.paymentMethod }}
+                                                </p>
+                                                <p class="text-muted small mb-0" *ngIf="purchase.validUntil">
+                                                    <i class="fa fa-calendar me-1"></i>Valid until: {{ formatDate(purchase.validUntil) }}
+                                                </p>
+                                            </div>
+                                            <div class="card-footer bg-white d-flex flex-column gap-2">
+                                                <a [routerLink]="['/course', purchase.courseId]" class="btn btn-sm btn-outline-primary w-100">
+                                                    <i class="fa fa-eye me-1"></i>View Course
+                                                </a>
+                                                <button class="btn btn-sm btn-primary w-100" (click)="downloadInvoice(purchase)">
+                                                    <i class="fa fa-download me-1"></i>Download Invoice
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                }
+                            </div>
+                        }
+                    </div>
+                </div>
+
+                <!-- Completed Courses Section -->
+                <div class="card shadow-sm mb-4">
+                    <div class="card-header bg-white">
+                        <h5 class="mb-0"><i class="fa fa-book me-2 text-primary"></i>Completed Courses</h5>
+                    </div>
+                    <div class="card-body">
+                        @if (completedCourses.length === 0) {
+                            <div class="text-center py-5">
+                                <i class="fa fa-book-open fa-3x text-muted mb-3"></i>
+                                <p class="text-muted">No courses completed yet.</p>
+                                <a routerLink="/courses" class="btn btn-primary">
+                                    <i class="fa fa-search me-2"></i>Browse Courses
+                                </a>
+                            </div>
+                        } @else {
+                            <div class="row g-4">
+                                @for (course of completedCourses; track course.id) {
+                                    <div class="col-md-6 col-lg-4">
+                                        <div class="card h-100 border-success">
+                                            @if (course.image) {
+                                                <img [src]="course.image" class="card-img-top" [alt]="course.name" style="height: 150px; object-fit: cover;">
+                                            } @else {
+                                                <div class="card-img-top bg-secondary d-flex align-items-center justify-content-center" style="height: 150px;">
+                                                    <i class="fa fa-book fa-3x text-white"></i>
+                                                </div>
+                                            }
+                                            <div class="card-body">
+                                                <h6 class="card-title">{{ course.name }}</h6>
+                                                <p class="text-muted small mb-2"><i class="fa fa-building me-1"></i>{{ course.instituteName }}</p>
+                                                <p class="text-muted small mb-2"><i class="fa fa-clock me-1"></i>{{ course.duration }} Hours</p>
+                                                <p class="text-muted small mb-2"><i class="fa fa-calendar me-1"></i>Completed: {{ formatDate(course.completedAt) }}</p>
+                                                <p class="text-success small mb-2"><i class="fa fa-trophy me-1"></i>Score: {{ course.quizScore.toFixed(2) }}%</p>
+                                            </div>
+                                            <div class="card-footer bg-white">
+                                                <a [routerLink]="['/course', course.id]" class="btn btn-sm btn-primary w-100">
+                                                    <i class="fa fa-eye me-1"></i>View Course
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                }
+                            </div>
+                        }
+                    </div>
+                </div>
+
+                <!-- Certificates Section -->
+                <div class="card shadow-sm">
+                    <div class="card-header bg-white">
+                        <h5 class="mb-0"><i class="fa fa-certificate me-2 text-primary"></i>Certificates</h5>
+                    </div>
+                    <div class="card-body">
+                        @if (certificates.length === 0) {
+                            <div class="text-center py-5">
+                                <i class="fa fa-certificate fa-3x text-muted mb-3"></i>
+                                <p class="text-muted">No certificates earned yet.</p>
+                                <p class="text-muted small">Complete courses to earn certificates!</p>
+                            </div>
+                        } @else {
+                            <div class="row g-4">
+                                @for (certificate of certificates; track certificate.id) {
+                                    <div class="col-md-6 col-lg-4">
+                                        <div class="card h-100 border-primary">
+                                            <div class="card-body text-center">
+                                                <i class="fa fa-certificate fa-4x text-primary mb-3"></i>
+                                                <h6 class="card-title">{{ certificate.courseName }}</h6>
+                                                <p class="text-muted small mb-2"><i class="fa fa-building me-1"></i>{{ certificate.instituteName }}</p>
+                                                <p class="text-muted small mb-2"><i class="fa fa-calendar me-1"></i>Issued: {{ formatDate(certificate.issueDate) }}</p>
+                                                <p class="text-muted small mb-3">Certificate #: {{ certificate.certificateNumber }}</p>
+                                                <button class="btn btn-sm btn-primary" (click)="downloadCertificate(certificate)">
+                                                    <i class="fa fa-download me-2"></i>Download PDF
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                }
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Profile Section End -->
+
+<!-- Footer Start -->
+<div class="container-fluid bg-dark text-light footer pt-5 mt-5">
+    <div class="container py-5">
+        <div class="row g-5">
+            <div class="col-lg-3 col-md-6">
+                <h4 class="text-white mb-3">Quick Link</h4>
+                <a class="btn btn-link" routerLink="/dashboard">Home</a>
+                <a class="btn btn-link" routerLink="/profile">Profile</a>
+                <a class="btn btn-link" href="#">Privacy Policy</a>
+                <a class="btn btn-link" href="#">Terms & Condition</a>
+            </div>
+            <div class="col-lg-3 col-md-6">
+                <h4 class="text-white mb-3">Contact</h4>
+                <p class="mb-2"><i class="fa fa-map-marker-alt me-3"></i>123 Street, New York, USA</p>
+                <p class="mb-2"><i class="fa fa-phone-alt me-3"></i>+012 345 67890</p>
+                <p class="mb-2"><i class="fa fa-envelope me-3"></i>info&#64;example.com</p>
+            </div>
+        </div>
+    </div>
+    <div class="container">
+        <div class="copyright">
+            <div class="row">
+                <div class="col-md-6 text-center text-md-start mb-3 mb-md-0">
+                    &copy; <a class="border-bottom" href="#">eLEARNING</a>, All Right Reserved.
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Footer End -->

@@ -1,0 +1,881 @@
+<!-- Spinner Start -->
+<div id="spinner" class="bg-white position-fixed translate-middle w-100 vh-100 top-50 start-50 d-flex align-items-center justify-content-center" style="display: none;">
+    <div class="spinner-border text-primary" style="width: 3rem; height: 3rem;" role="status">
+        <span class="sr-only">Loading...</span>
+    </div>
+</div>
+<!-- Spinner End -->
+
+
+<!-- Navbar Start -->
+<nav class="navbar navbar-expand-lg bg-white navbar-light shadow fixed-top p-0" style="z-index: 1030;">
+    <div class="container-fluid px-4 px-lg-5">
+        <a routerLink="/dashboard" class="navbar-brand d-flex align-items-center">
+            <h2 class="m-0 text-primary"><i class="fa fa-book me-3"></i>eLEARNING</h2>
+        </a>
+        <button type="button" class="navbar-toggler me-4" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarCollapse">
+            <div class="navbar-nav ms-auto p-4 p-lg-0">
+                <a routerLink="/dashboard" class="nav-item nav-link active">Home</a>
+                <a routerLink="/about" class="nav-item nav-link">About</a>
+
+                <div class="nav-item dropdown">
+                    <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">Courses</a>
+                    <div class="dropdown-menu fade-down m-0">
+                        <a routerLink="/courses" class="dropdown-item">All Courses</a>
+                        <a routerLink="/premium-courses" class="dropdown-item">Premium Courses</a>
+                    </div>
+                </div>
+
+                <a routerLink="/books" class="nav-item nav-link">Books</a>
+                <a routerLink="/contact" class="nav-item nav-link">Contact</a>
+            </div>
+            <!-- Search Bar in Navbar - Desktop -->
+            <div class="navbar-search ms-3 me-3 d-none d-lg-flex">
+                <div class="input-group" style="min-width: 300px;">
+                    <input 
+                        type="text" 
+                        class="form-control" 
+                        placeholder="Search courses..." 
+                        [(ngModel)]="searchQuery"
+                        (keyup.enter)="searchCourses()"
+                        (input)="onSearchInput()"
+                        #navbarSearchInput>
+                    <button class="btn btn-primary" type="button" (click)="searchCourses()">
+                        <i class="fa fa-search"></i>
+                    </button>
+                    @if (searchQuery && searchQuery.trim() !== '') {
+                        <button class="btn btn-outline-secondary" type="button" (click)="clearSearch()">
+                            <i class="fa fa-times"></i>
+                        </button>
+                    }
+                </div>
+            </div>
+            <!-- Search Bar in Navbar - Mobile -->
+            <div class="navbar-search px-4 pb-3 d-lg-none">
+                <div class="input-group">
+                    <input 
+                        type="text" 
+                        class="form-control" 
+                        placeholder="Search courses..." 
+                        [(ngModel)]="searchQuery"
+                        (keyup.enter)="searchCourses()"
+                        (input)="onSearchInput()"
+                        #navbarSearchInputMobile>
+                    <button class="btn btn-primary" type="button" (click)="searchCourses()">
+                        <i class="fa fa-search"></i>
+                    </button>
+                    @if (searchQuery && searchQuery.trim() !== '') {
+                        <button class="btn btn-outline-secondary" type="button" (click)="clearSearch()">
+                            <i class="fa fa-times"></i>
+                        </button>
+                    }
+                </div>
+            </div>
+            <!-- Show Login button if not logged in, Settings icon if logged in -->
+            <a *ngIf="!user" routerLink="/login" class="btn btn-primary py-4 px-lg-5 d-none d-lg-block">Login<i class="fa fa-arrow-right ms-3"></i></a>
+            <a *ngIf="user" routerLink="/profile" class="nav-link d-none d-lg-flex align-items-center ms-3" title="Settings" style="font-size: 1.5rem; color: #6782ac; cursor: pointer;">
+                <i class="fa fa-cog"></i>
+            </a>
+            <!-- Mobile: Show Login button if not logged in, Settings icon if logged in -->
+            <a *ngIf="!user" routerLink="/login" class="btn btn-primary py-3 px-4 d-lg-none ms-3">Login<i class="fa fa-arrow-right ms-2"></i></a>
+            <a *ngIf="user" routerLink="/profile" class="nav-link d-lg-none ms-3" title="Settings" style="font-size: 1.5rem; color: #6782ac; cursor: pointer;">
+                <i class="fa fa-cog"></i>
+            </a>
+        </div>
+    </div>
+</nav>
+<!-- Navbar End -->
+
+<!-- Spacer for fixed navbar -->
+<div style="height: 80px;"></div>
+
+<!-- Carousel Start -->
+<div class="container-fluid p-0 mb-5 position-relative">
+    <div class="owl-carousel header-carousel position-relative" ngSkipHydration>
+        <div class="owl-carousel-item position-relative">
+            <img class="img-fluid" src="assets/img/carousel-1.jpg" alt="">
+            <div class="position-absolute top-0 start-0 w-100 h-100 d-flex align-items-center" style="background: rgba(24, 29, 56, .7);">
+                <div class="container">
+                    <div class="row justify-content-start">
+                        <div class="col-sm-10 col-lg-8">
+                            <h5 class="text-primary text-uppercase mb-3 animated slideInDown">Best Online Courses</h5>
+                            <h1 class="display-3 text-white animated slideInDown">The Best Online Learning Platform</h1>
+                            <p class="fs-5 text-white mb-4 pb-2">"Learn anytime, anywhere, and unlock your full potential with expert-led courses. Explore new skills, grow your knowledge, and achieve your goals at your own pace. Join a community of learners and make learning exciting, practical, and rewarding."</p>
+                            <a href="#" class="btn btn-primary py-md-3 px-md-5 me-3 animated slideInLeft">Read More</a>
+                            <a href="#" class="btn btn-light py-md-3 px-md-5 animated slideInRight">Join Now</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="owl-carousel-item position-relative">
+            <img class="img-fluid" src="assets/img/carousel-2.jpg" alt="">
+            <div class="position-absolute top-0 start-0 w-100 h-100 d-flex align-items-center" style="background: rgba(24, 29, 56, .7);">
+                <div class="container">
+                    <div class="row justify-content-start">
+                        <div class="col-sm-10 col-lg-8">
+                            <h5 class="text-primary text-uppercase mb-3 animated slideInDown">Best Online Courses</h5>
+                            <h1 class="display-3 text-white animated slideInDown">Get Educated Online From Your Home</h1>
+                            <p class="fs-5 text-white mb-4 pb-2">"Learn anytime, anywhere, and unlock your full potential with expert-led courses. Explore new skills, grow your knowledge, and achieve your goals at your own pace. Join a community of learners and make learning exciting, practical, and rewarding."</p>
+                            <a href="#" class="btn btn-primary py-md-3 px-md-5 me-3 animated slideInLeft">Read More</a>
+                            <a href="#" class="btn btn-light py-md-3 px-md-5 animated slideInRight">Join Now</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Carousel End -->
+
+<!-- Search Results Start -->
+@if (showSearchResults) {
+    <div class="container-xxl py-5">
+        <div class="container">
+            @if (isSearching) {
+                <div class="text-center py-5">
+                    <div class="spinner-border text-primary mb-3" role="status" style="width: 3rem; height: 3rem;">
+                        <span class="visually-hidden">Loading...</span>
+                    </div>
+                    <p class="text-muted">Searching for courses...</p>
+                </div>
+            } @else if (searchedCourses.length > 0) {
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <div>
+                        <h6 class="section-title bg-white text-center text-primary px-3">Search Results</h6>
+                        <h1 class="mb-0">Found {{ searchedCourses.length }} Course{{ searchedCourses.length !== 1 ? 's' : '' }}</h1>
+                        <p class="text-muted mb-0">Searching for: "<strong>{{ searchQuery }}</strong>"</p>
+                    </div>
+                    <button class="btn btn-outline-secondary" (click)="clearSearch()">
+                        <i class="fa fa-times me-2"></i>Clear Search
+                    </button>
+                </div>
+                <div class="row g-4 justify-content-center">
+                    @for (course of searchedCourses; track course.id) {
+                        <div class="col-lg-4 col-md-6 wow fadeInUp" [attr.data-wow-delay]="'0.' + ($index + 1) + 's'">
+                            <div class="course-item bg-light">
+                                <div class="position-relative overflow-hidden">
+                                    @if (course.image) {
+                                        <img class="img-fluid" [src]="course.image" [alt]="course.name" style="width: 100%; height: 200px; object-fit: cover;">
+                                    } @else {
+                                        <img class="img-fluid" src="assets/img/course-1.jpg" [alt]="course.name" style="width: 100%; height: 200px; object-fit: cover;">
+                                    }
+                                    <div class="w-100 d-flex justify-content-center position-absolute bottom-0 start-0 mb-4">
+                                        <button type="button" class="flex-shrink-0 btn btn-sm btn-primary px-3" style="border-radius: 30px;" (click)="goToCourse(course.id)">
+                                            Go to Course
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="text-center p-4 pb-0">
+                                    <h5 class="mb-4">{{ course.name }}</h5>
+                                    <p class="text-muted mb-2"><i class="fa fa-building text-primary me-2"></i>{{ course.instituteName }}</p>
+                                    <p class="text-muted mb-2"><i class="fa fa-user-tie text-primary me-2"></i>{{ course.mentorName }}</p>
+                                </div>
+                                <div class="d-flex border-top">
+                                    <small class="flex-fill text-center border-end py-2"><i class="fa fa-tag text-primary me-2"></i>{{ course.categoryName }}</small>
+                                    <small class="flex-fill text-center border-end py-2"><i class="fa fa-clock text-primary me-2"></i>{{ course.duration }} Hrs</small>
+                                    <small class="flex-fill text-center py-2"><i class="fa fa-video text-primary me-2"></i>{{ course.numberOfSessions }} Sessions</small>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+            } @else {
+                <div class="text-center py-5">
+                    <i class="fa fa-search fa-3x text-muted mb-3"></i>
+                    <h3 class="mb-3">No courses found</h3>
+                    <p class="text-muted mb-4">No courses match your search for "<strong>{{ searchQuery }}</strong>"</p>
+                    <button class="btn btn-primary" (click)="clearSearch()">
+                        <i class="fa fa-times me-2"></i>Clear Search
+                    </button>
+                </div>
+            }
+        </div>
+    </div>
+}
+<!-- Search Results End -->
+
+<!-- Premium Courses Start -->
+<div class="container-xxl py-5">
+    <div class="container">
+        <div class="text-center wow fadeInUp" data-wow-delay="0.1s">
+            <h6 class="section-title bg-white text-center text-primary px-3">Premium</h6>
+            <h1 class="mb-5">Premium Courses</h1>
+        </div>
+
+        @if (isLoadingPremium) {
+            <div class="text-center py-5">
+                <div class="spinner-border text-primary" role="status">
+                    <span class="visually-hidden">Loading...</span>
+                </div>
+                <p class="mt-3 text-muted">Loading premium courses...</p>
+            </div>
+        } @else if (premiumSubscriptions.length > 0) {
+            <div class="row g-4 justify-content-center">
+                @for (sub of premiumSubscriptions; track sub.id) {
+                    <div class="col-lg-4 col-md-6 wow fadeInUp" data-wow-delay="0.1s">
+                        <div class="course-item bg-light">
+                            <div class="position-relative overflow-hidden">
+                                @if (sub.courseImage) {
+                                    <img class="img-fluid" [src]="sub.courseImage" [alt]="sub.courseName" style="width: 100%; height: 200px; object-fit: cover;">
+                                } @else {
+                                    <img class="img-fluid" src="assets/img/course-1.jpg" [alt]="sub.courseName" style="width: 100%; height: 200px; object-fit: cover;">
+                                }
+                                <div class="w-100 d-flex justify-content-center position-absolute bottom-0 start-0 mb-4">
+                                    @if (isCoursePurchased(sub.courseId)) {
+                                        <button
+                                            type="button"
+                                            class="flex-shrink-0 btn btn-sm btn-outline-light px-3"
+                                            style="border-radius: 30px;"
+                                            (click)="goToCourse(sub.courseId)">
+                                            View Details
+                                        </button>
+                                    } @else {
+                                        <button
+                                            type="button"
+                                            class="flex-shrink-0 btn btn-sm btn-primary px-3"
+                                            style="border-radius: 30px;"
+                                            (click)="goToPayment(sub.courseId)">
+                                            Buy / Subscribe
+                                        </button>
+                                    }
+                                </div>
+                            </div>
+                            <div class="text-center p-4 pb-0">
+                                <h5 class="mb-3">{{ sub.courseName }}</h5>
+                                <p class="text-muted mb-1" *ngIf="sub.instituteName">
+                                    <i class="fa fa-building text-primary me-2"></i>{{ sub.instituteName }}
+                                </p>
+                                <p class="text-muted mb-2">
+                                    <i class="fa fa-crown text-warning me-2"></i>{{ sub.plan }} - ₹{{ sub.price }}
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        } @else {
+            <div class="text-center py-5">
+                <i class="fa fa-crown fa-3x text-muted mb-3"></i>
+                <p class="text-muted mb-1">No premium courses available at the moment.</p>
+            </div>
+        }
+    </div>
+</div>
+<!-- Premium Courses End -->
+
+
+<!-- About Start -->
+<!-- <div class="container-xxl py-5">
+    <div class="container">
+        <div class="row g-5">
+            <div class="col-lg-6 wow fadeInUp" data-wow-delay="0.1s" style="min-height: 400px;">
+                <div class="position-relative h-100">
+                    <img class="img-fluid position-absolute w-100 h-100" src="assets/img/about.jpg" alt="" style="object-fit: cover;">
+                </div>
+            </div>
+            <div class="col-lg-6 wow fadeInUp" data-wow-delay="0.3s">
+                <h6 class="section-title bg-white text-start text-primary pe-3">About Us</h6>
+                <h1 class="mb-4">Welcome to eLEARNING</h1>
+                <p class="mb-4">Tempor erat elitr rebum at clita. Diam dolor diam ipsum sit. Aliqu diam amet diam et eos. Clita erat ipsum et lorem et sit.</p>
+                <p class="mb-4">Tempor erat elitr rebum at clita. Diam dolor diam ipsum sit. Aliqu diam amet diam et eos. Clita erat ipsum et lorem et sit, sed stet lorem sit clita duo justo magna dolore erat amet</p>
+                <div class="row gy-2 gx-4 mb-4">
+                    <div class="col-sm-6">
+                        <p class="mb-0"><i class="fa fa-arrow-right text-primary me-2"></i>Skilled Instructors</p>
+                    </div>
+                    <div class="col-sm-6">
+                        <p class="mb-0"><i class="fa fa-arrow-right text-primary me-2"></i>Online Classes</p>
+                    </div>
+                    <div class="col-sm-6">
+                        <p class="mb-0"><i class="fa fa-arrow-right text-primary me-2"></i>International Certificate</p>
+                    </div>
+                    <div class="col-sm-6">
+                        <p class="mb-0"><i class="fa fa-arrow-right text-primary me-2"></i>Skilled Instructors</p>
+                    </div>
+                    <div class="col-sm-6">
+                        <p class="mb-0"><i class="fa fa-arrow-right text-primary me-2"></i>Online Classes</p>
+                    </div>
+                    <div class="col-sm-6">
+                        <p class="mb-0"><i class="fa fa-arrow-right text-primary me-2"></i>International Certificate</p>
+                    </div>
+                </div>
+                <a class="btn btn-primary py-3 px-5 mt-2" href="#">Read More</a>
+            </div>
+        </div>
+    </div>
+</div> -->
+<!-- About End -->
+
+
+<!-- Categories Start -->
+<div class="container-xxl py-5 category">
+    <div class="container">
+        <div class="text-center wow fadeInUp" data-wow-delay="0.1s">
+            <h6 class="section-title bg-white text-center text-primary px-3">Categories</h6>
+            <h1 class="mb-5">Courses Categories</h1>
+        </div>
+        
+        @if (isLoadingCategories) {
+            <div class="text-center py-5">
+                <div class="spinner-border text-primary" role="status">
+                    <span class="visually-hidden">Loading...</span>
+                </div>
+                <p class="mt-3 text-muted">Loading categories...</p>
+            </div>
+        } @else if (courseCategories.length === 0) {
+            <div class="text-center py-5">
+                <i class="fa fa-folder fa-3x text-muted mb-3"></i>
+                <p class="text-muted">No course categories available at the moment.</p>
+                <p class="text-muted small">Please check if categories have been added by the admin.</p>
+                <button class="btn btn-sm btn-primary mt-2" (click)="loadCourseCategories()">
+                    <i class="fa fa-refresh me-2"></i>Refresh
+                </button>
+            </div>
+        } @else {
+            <div class="row g-3">
+                @for (category of courseCategories; track category.id; let i = $index) {
+                    @if (i === 0 && courseCategories.length >= 4) {
+
+                        <div class="col-lg-7 col-md-6">
+                            <div class="row g-3">
+                                <div class="col-12 wow zoomIn" data-wow-delay="0.1s">
+                                    <a class="position-relative d-block overflow-hidden" style="cursor: pointer;" (click)="navigateToCategoryCourses(category.id)">
+                                        @if (category.image) {
+                                            <img class="img-fluid" [src]="category.image" [alt]="category.name" style="width: 100%; height: 250px; object-fit: cover;">
+                                        } @else {
+                                            <div class="bg-secondary d-flex align-items-center justify-content-center" style="width: 100%; height: 250px;">
+                                                <i class="fa fa-folder fa-5x text-white"></i>
+                                            </div>
+                                        }
+                                        <div class="bg-white text-center position-absolute bottom-0 end-0 py-2 px-3" style="margin: 1px;">
+                                            <h5 class="m-0">{{ category.name }}</h5>
+                                            <small class="text-primary">{{ category.numberOfCourses || 0 }} Course{{ (category.numberOfCourses || 0) !== 1 ? 's' : '' }}</small>
+                                        </div>
+                                    </a>
+                                </div>
+
+                                @if (courseCategories.length > 1) {
+                                    <div class="col-lg-6 col-md-12 wow zoomIn" data-wow-delay="0.3s">
+                                        <a class="position-relative d-block overflow-hidden" style="cursor: pointer;" (click)="navigateToCategoryCourses(courseCategories[1].id)">
+                                            @if (courseCategories[1].image) {
+                                                <img class="img-fluid" [src]="courseCategories[1].image" [alt]="courseCategories[1].name" style="width: 100%; height: 200px; object-fit: cover;">
+                                            } @else {
+                                                <div class="bg-secondary d-flex align-items-center justify-content-center" style="width: 100%; height: 200px;">
+                                                    <i class="fa fa-folder fa-4x text-white"></i>
+                                                </div>
+                                            }
+                                            <div class="bg-white text-center position-absolute bottom-0 end-0 py-2 px-3" style="margin: 1px;">
+                                                <h5 class="m-0">{{ courseCategories[1].name }}</h5>
+                                                <small class="text-primary">{{ courseCategories[1].numberOfCourses || 0 }} Course{{ (courseCategories[1].numberOfCourses || 0) !== 1 ? 's' : '' }}</small>
+                                            </div>
+                                        </a>
+                                    </div>
+                                }
+
+                                @if (courseCategories.length > 2) {
+                                    <div class="col-lg-6 col-md-12 wow zoomIn" data-wow-delay="0.5s">
+                                        <a class="position-relative d-block overflow-hidden" style="cursor: pointer;" (click)="navigateToCategoryCourses(courseCategories[2].id)">
+                                            @if (courseCategories[2].image) {
+                                                <img class="img-fluid" [src]="courseCategories[2].image" [alt]="courseCategories[2].name" style="width: 100%; height: 200px; object-fit: cover;">
+                                            } @else {
+                                                <div class="bg-secondary d-flex align-items-center justify-content-center" style="width: 100%; height: 200px;">
+                                                    <i class="fa fa-folder fa-4x text-white"></i>
+                                                </div>
+                                            }
+                                            <div class="bg-white text-center position-absolute bottom-0 end-0 py-2 px-3" style="margin: 1px;">
+                                                <h5 class="m-0">{{ courseCategories[2].name }}</h5>
+                                                <small class="text-primary">{{ courseCategories[2].numberOfCourses || 0 }} Course{{ (courseCategories[2].numberOfCourses || 0) !== 1 ? 's' : '' }}</small>
+                                            </div>
+                                        </a>
+                                    </div>
+                                }
+                            </div>
+                        </div>
+
+                        @if (courseCategories.length > 3) {
+                            <div class="col-lg-5 col-md-6 wow zoomIn" data-wow-delay="0.7s" style="min-height: 350px;">
+                                <a class="position-relative d-block h-100 overflow-hidden" style="cursor: pointer;" (click)="navigateToCategoryCourses(courseCategories[3].id)">
+                                    @if (courseCategories[3].image) {
+                                        <img class="img-fluid position-absolute w-100 h-100" [src]="courseCategories[3].image" [alt]="courseCategories[3].name" style="object-fit: cover;">
+                                    } @else {
+                                        <div class="bg-secondary d-flex align-items-center justify-content-center h-100">
+                                            <i class="fa fa-folder fa-5x text-white"></i>
+                                        </div>
+                                    }
+                                    <div class="bg-white text-center position-absolute bottom-0 end-0 py-2 px-3" style="margin: 1px;">
+                                        <h5 class="m-0">{{ courseCategories[3].name }}</h5>
+                                        <small class="text-primary">{{ courseCategories[3].numberOfCourses || 0 }} Course{{ (courseCategories[3].numberOfCourses || 0) !== 1 ? 's' : '' }}</small>
+                                    </div>
+                                </a>
+                            </div>
+                        }
+
+                    } @else if (courseCategories.length < 4) {
+
+                        <div class="col-lg-4 col-md-6 wow zoomIn" [attr.data-wow-delay]="(i * 0.2) + 's'">
+                            <a class="position-relative d-block overflow-hidden" style="cursor: pointer;" (click)="navigateToCategoryCourses(category.id)">
+                                @if (category.image) {
+                                    <img class="img-fluid" [src]="category.image" [alt]="category.name" style="width: 100%; height: 250px; object-fit: cover;">
+                                } @else {
+                                    <div class="bg-secondary d-flex align-items-center justify-content-center" style="width: 100%; height: 250px;">
+                                        <i class="fa fa-folder fa-5x text-white"></i>
+                                    </div>
+                                }
+                                <div class="bg-white text-center position-absolute bottom-0 end-0 py-2 px-3" style="margin: 1px;">
+                                    <h5 class="m-0">{{ category.name }}</h5>
+                                    <small class="text-primary">{{ category.numberOfCourses || 0 }} Course{{ (category.numberOfCourses || 0) !== 1 ? 's' : '' }}</small>
+                                </div>
+                            </a>
+                        </div>
+
+                    }
+                }
+            </div>
+        }
+    </div>
+</div>
+
+<!-- Categories End -->
+
+
+
+<!-- Courses Start (Dynamic from database) -->
+<div class="container-xxl py-5" *ngIf="!showSearchResults">
+    <div class="container">
+        <div class="text-center wow fadeInUp" data-wow-delay="0.1s">
+            <h6 class="section-title bg-white text-center text-primary px-3">Courses</h6>
+            <h1 class="mb-5">Available Courses</h1>
+        </div>
+
+        @if (isLoadingCourses) {
+            <div class="text-center py-5">
+                <div class="spinner-border text-primary" role="status">
+                    <span class="visually-hidden">Loading...</span>
+                </div>
+                <p class="mt-3 text-muted">Loading courses...</p>
+            </div>
+        } @else if (courses.length === 0) {
+            <div class="text-center py-5">
+                <i class="fa fa-book fa-3x text-muted mb-3"></i>
+                <p class="text-muted mb-1">No courses available at the moment.</p>
+                <button class="btn btn-sm btn-primary mt-2" (click)="loadCourses()">
+                    <i class="fa fa-refresh me-2"></i>Refresh
+                </button>
+            </div>
+        } @else {
+            <div class="row g-4 justify-content-center">
+                @for (course of courses; track course.id) {
+                    <div class="col-lg-4 col-md-6 wow fadeInUp" data-wow-delay="0.1s">
+                        <div class="course-item bg-light">
+                            <div class="position-relative overflow-hidden">
+                                @if (course.image) {
+                                    <img class="img-fluid" [src]="course.image" [alt]="course.name" style="width: 100%; height: 200px; object-fit: cover;">
+                                } @else {
+                                    <img class="img-fluid" src="assets/img/course-1.jpg" [alt]="course.name" style="width: 100%; height: 200px; object-fit: cover;">
+                                }
+                                <div class="w-100 d-flex justify-content-center position-absolute bottom-0 start-0 mb-4">
+                                    <button type="button" class="flex-shrink-0 btn btn-sm btn-primary px-3" style="border-radius: 30px;" (click)="goToCourse(course.id)">
+                                        View Details
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="text-center p-4 pb-0">
+                                <h5 class="mb-3">{{ course.name }}</h5>
+                                <p class="text-muted mb-2"><i class="fa fa-building text-primary me-2"></i>{{ course.instituteName }}</p>
+                                <p class="text-muted mb-2"><i class="fa fa-user-tie text-primary me-2"></i>{{ course.mentorName }}</p>
+                                <p class="text-muted mb-2">
+                                    <i class="fa fa-rupee-sign text-primary me-2"></i>{{ getCoursePriceLabel(course.id) }}
+                                </p>
+                            </div>
+                            <div class="d-flex border-top">
+                                <small class="flex-fill text-center border-end py-2">
+                                    <i class="fa fa-tag text-primary me-2"></i>{{ course.categoryName }}
+                                </small>
+                                <small class="flex-fill text-center border-end py-2">
+                                    <i class="fa fa-clock text-primary me-2"></i>{{ course.duration }} Hrs
+                                </small>
+                                <small class="flex-fill text-center py-2">
+                                    <i class="fa fa-video text-primary me-2"></i>{{ course.numberOfSessions }} Sessions
+                                </small>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        }
+    </div>
+</div>
+<!-- Courses End -->
+
+
+<!-- Team Start -->
+<div class="container-xxl py-5">
+    <div class="container">
+        <div class="text-center wow fadeInUp" data-wow-delay="0.1s">
+            <h6 class="section-title bg-white text-center text-primary px-3">Instructors</h6>
+            <h1 class="mb-5">Expert Instructors</h1>
+        </div>
+        @if (isLoadingMentors) {
+            <div class="text-center py-5">
+                <div class="spinner-border text-primary" role="status">
+                    <span class="visually-hidden">Loading...</span>
+                </div>
+                <p class="mt-3 text-muted">Loading instructors...</p>
+            </div>
+        } @else if (mentors.length === 0) {
+            <div class="text-center py-5">
+                <i class="fa fa-chalkboard-teacher fa-3x text-muted mb-3"></i>
+                <p class="text-muted">No instructors available at the moment.</p>
+            </div>
+        } @else {
+            <div class="row g-4">
+                @for (mentor of mentors; track mentor.id; let i = $index) {
+                    <div class="col-lg-3 col-md-6 wow fadeInUp" [attr.data-wow-delay]="(i * 0.2) + 's'">
+                        <div class="team-item bg-light">
+                            <div class="overflow-hidden" style="cursor: pointer;" (click)="openMentorDetails(mentor.id)">
+                                @if (mentor.image) {
+                                    <img class="img-fluid" [src]="mentor.image" [alt]="mentor.name" style="width: 100%; height: 300px; object-fit: cover;">
+                                } @else {
+                                    <div class="bg-secondary d-flex align-items-center justify-content-center" style="width: 100%; height: 300px;">
+                                        <i class="fa fa-user fa-5x text-white"></i>
+                                    </div>
+                                }
+                            </div>
+                            <div class="position-relative d-flex justify-content-center" style="margin-top: -23px;">
+                                <div class="bg-light d-flex justify-content-center pt-2 px-1">
+                                    @if (mentor.githubLink) {
+                                        <a class="btn btn-sm-square btn-dark mx-1" [href]="mentor.githubLink" target="_blank" title="GitHub">
+                                            <i class="fab fa-github"></i>
+                                        </a>
+                                    }
+                                    @if (mentor.linkedinLink) {
+                                        <a class="btn btn-sm-square btn-primary mx-1" [href]="mentor.linkedinLink" target="_blank" title="LinkedIn">
+                                            <i class="fab fa-linkedin"></i>
+                                        </a>
+                                    }
+                                    @if (mentor.youtubeLink) {
+                                        <a class="btn btn-sm-square btn-danger mx-1" [href]="mentor.youtubeLink" target="_blank" title="YouTube">
+                                            <i class="fab fa-youtube"></i>
+                                        </a>
+                                    }
+                                    @if (!mentor.githubLink && !mentor.linkedinLink && !mentor.youtubeLink) {
+                                        <a class="btn btn-sm-square btn-primary mx-1" [href]="'mailto:' + mentor.email" title="Email">
+                                            <i class="fa fa-envelope"></i>
+                                        </a>
+                                    }
+                                </div>
+                            </div>
+                            <div class="text-center p-4">
+                                <h5 class="mb-0">{{ mentor.name }}</h5>
+                                <small class="text-primary">{{ mentor.courseSpecialization || 'Instructor' }}</small>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        }
+    </div>
+</div>
+<!-- Team End -->
+
+<!-- Mentor Details Modal -->
+@if (isMentorModalOpen) {
+    <div class="modal fade show" style="display: block;" tabindex="-1" role="dialog" (click)="closeMentorModal()">
+        <div class="modal-dialog modal-lg modal-dialog-centered" role="document" (click)="$event.stopPropagation()">
+            <div class="modal-content">
+                <div class="modal-header bg-primary text-white">
+                    <h5 class="modal-title">
+                        <i class="fa fa-chalkboard-teacher me-2"></i>Mentor Details
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" (click)="closeMentorModal()" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    @if (isLoadingMentorDetails) {
+                        <div class="text-center py-5">
+                            <div class="spinner-border text-primary" role="status">
+                                <span class="visually-hidden">Loading...</span>
+                            </div>
+                            <p class="mt-3 text-muted">Loading mentor details...</p>
+                        </div>
+                    } @else if (selectedMentor) {
+                        <div class="row">
+                            <div class="col-md-4 text-center mb-4">
+                                @if (selectedMentor.image) {
+                                    <img [src]="selectedMentor.image" [alt]="selectedMentor.name" 
+                                         class="img-fluid rounded-circle border border-primary" 
+                                         style="width: 200px; height: 200px; object-fit: cover;">
+                                } @else {
+                                    <div class="bg-secondary rounded-circle d-flex align-items-center justify-content-center mx-auto" 
+                                         style="width: 200px; height: 200px;">
+                                        <i class="fa fa-user fa-5x text-white"></i>
+                                    </div>
+                                }
+                                <h4 class="mt-3 mb-1">{{ selectedMentor.name }}</h4>
+                                @if (selectedMentor.courseSpecialization) {
+                                    <p class="text-primary mb-2">
+                                        <i class="fa fa-graduation-cap me-2"></i>{{ selectedMentor.courseSpecialization }}
+                                    </p>
+                                }
+                                <div class="d-flex justify-content-center gap-2 mt-3 flex-wrap">
+                                    @if (selectedMentor.githubLink) {
+                                        <a [href]="selectedMentor.githubLink" target="_blank" class="btn btn-sm btn-dark" title="GitHub">
+                                            <i class="fab fa-github me-1"></i>GitHub
+                                        </a>
+                                    }
+                                    @if (selectedMentor.linkedinLink) {
+                                        <a [href]="selectedMentor.linkedinLink" target="_blank" class="btn btn-sm btn-primary" title="LinkedIn">
+                                            <i class="fab fa-linkedin me-1"></i>LinkedIn
+                                        </a>
+                                    }
+                                    @if (selectedMentor.youtubeLink) {
+                                        <a [href]="selectedMentor.youtubeLink" target="_blank" class="btn btn-sm btn-danger" title="YouTube">
+                                            <i class="fab fa-youtube me-1"></i>YouTube
+                                        </a>
+                                    }
+                                </div>
+                            </div>
+                            <div class="col-md-8">
+                                <div class="mb-3">
+                                    <h6 class="text-primary">
+                                        <i class="fa fa-envelope me-2"></i>Email Address
+                                    </h6>
+                                    <p class="mb-0">
+                                        <a [href]="'mailto:' + selectedMentor.email">{{ selectedMentor.email }}</a>
+                                    </p>
+                                </div>
+                                
+                                @if (selectedMentor.educationHistory) {
+                                    <div class="mb-3">
+                                        <h6 class="text-primary">
+                                            <i class="fa fa-graduation-cap me-2"></i>Education History
+                                        </h6>
+                                        <p class="mb-0" style="white-space: pre-line;">{{ selectedMentor.educationHistory }}</p>
+                                    </div>
+                                }
+                                
+                                @if (selectedMentor.experience) {
+                                    <div class="mb-3">
+                                        <h6 class="text-primary">
+                                            <i class="fa fa-briefcase me-2"></i>Experience
+                                        </h6>
+                                        <p class="mb-0" style="white-space: pre-line;">{{ selectedMentor.experience }}</p>
+                                    </div>
+                                }
+                                
+                                @if (!selectedMentor.educationHistory && !selectedMentor.experience) {
+                                    <div class="alert alert-info">
+                                        <i class="fa fa-info-circle me-2"></i>Additional information will be available soon.
+                                    </div>
+                                }
+                            </div>
+                        </div>
+                    }
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" (click)="closeMentorModal()">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal-backdrop fade show"></div>
+}
+
+<!-- Testimonial Start -->
+<!-- <div class="container-xxl py-5 wow fadeInUp" data-wow-delay="0.1s">
+    <div class="container">
+        <div class="text-center">
+            <h6 class="section-title bg-white text-center text-primary px-3">Testimonial</h6>
+            <h1 class="mb-5">Our Students Say!</h1>
+        </div>
+        <div class="owl-carousel testimonial-carousel position-relative" ngSkipHydration>
+            <div class="testimonial-item text-center">
+                <img class="border rounded-circle p-2 mx-auto mb-3" src="assets/img/testimonial-1.jpg" style="width: 80px; height: 80px;">
+                <h5 class="mb-0">Client Name</h5>
+                <p>Profession</p>
+                <div class="testimonial-text bg-light text-center p-4">
+                <p class="mb-0">Tempor erat elitr rebum at clita. Diam dolor diam ipsum sit diam amet diam et eos. Clita erat ipsum et lorem et sit.</p>
+                </div>
+            </div>
+            <div class="testimonial-item text-center">
+                <img class="border rounded-circle p-2 mx-auto mb-3" src="assets/img/testimonial-2.jpg" style="width: 80px; height: 80px;">
+                <h5 class="mb-0">Client Name</h5>
+                <p>Profession</p>
+                <div class="testimonial-text bg-light text-center p-4">
+                <p class="mb-0">Tempor erat elitr rebum at clita. Diam dolor diam ipsum sit diam amet diam et eos. Clita erat ipsum et lorem et sit.</p>
+                </div>
+            </div>
+            <div class="testimonial-item text-center">
+                <img class="border rounded-circle p-2 mx-auto mb-3" src="assets/img/testimonial-3.jpg" style="width: 80px; height: 80px;">
+                <h5 class="mb-0">Client Name</h5>
+                <p>Profession</p>
+                <div class="testimonial-text bg-light text-center p-4">
+                <p class="mb-0">Tempor erat elitr rebum at clita. Diam dolor diam ipsum sit diam amet diam et eos. Clita erat ipsum et lorem et sit.</p>
+                </div>
+            </div>
+            <div class="testimonial-item text-center">
+                <img class="border rounded-circle p-2 mx-auto mb-3" src="assets/img/testimonial-4.jpg" style="width: 80px; height: 80px;">
+                <h5 class="mb-0">Client Name</h5>
+                <p>Profession</p>
+                <div class="testimonial-text bg-light text-center p-4">
+                <p class="mb-0">Tempor erat elitr rebum at clita. Diam dolor diam ipsum sit diam amet diam et eos. Clita erat ipsum et lorem et sit.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div> -->
+<div class="container-xxl py-5 wow fadeInUp" data-wow-delay="0.1s">
+    <div class="container">
+        <div class="text-center">
+            <h6 class="section-title bg-white text-center text-primary px-3">Testimonials</h6>
+            <h1 class="mb-5">What Our Students Say</h1>
+        </div>
+
+        <div class="owl-carousel testimonial-carousel position-relative" ngSkipHydration>
+
+            <div class="testimonial-item text-center">
+                <img class="border rounded-circle p-2 mx-auto mb-3"
+                     src="assets/img/testimonial-2.jpg"
+                     style="width: 80px; height: 80px;">
+                <h5 class="mb-0">Aarav Patel</h5>
+                <p>UI/UX Design Student</p>
+                <div class="testimonial-text bg-light text-center p-4">
+                    <p class="mb-0">
+                        The course was very easy to understand and well structured.
+                        It helped me build confidence in UI/UX design and improve my creativity.
+                    </p>
+                </div>
+            </div>
+
+            <div class="testimonial-item text-center">
+                <img class="border rounded-circle p-2 mx-auto mb-3"
+                     src="assets/img/testimonial-1.jpg"
+                     style="width: 80px; height: 80px;">
+                <h5 class="mb-0">Neha Sharma</h5>
+                <p>Web Design Learner</p>
+                <div class="testimonial-text bg-light text-center p-4">
+                    <p class="mb-0">
+                        The practical approach and real-world examples made learning enjoyable.
+                        I can now create professional designs using Figma.
+                    </p>
+                </div>
+            </div>
+
+            <div class="testimonial-item text-center">
+                <img class="border rounded-circle p-2 mx-auto mb-3"
+                     src="assets/img/testimonial-3.jpg"
+                     style="width: 80px; height: 80px;">
+                <h5 class="mb-0">Rohan Mehta</h5>
+                <p>Frontend Developer</p>
+                <div class="testimonial-text bg-light text-center p-4">
+                    <p class="mb-0">
+                        This course improved my understanding of user flows and usability principles.
+                        It is perfect for beginners as well as developers.
+                    </p>
+                </div>
+            </div>
+
+            <div class="testimonial-item text-center">
+                <img class="border rounded-circle p-2 mx-auto mb-3"
+                     src="assets/img/testimonial-4.jpg"
+                     style="width: 80px; height: 80px;">
+                <h5 class="mb-0">Priya Desai</h5>
+                <p>Graphic Designer</p>
+                <div class="testimonial-text bg-light text-center p-4">
+                    <p class="mb-0">
+                        I loved the design thinking concepts explained in this course.
+                        It helped me design better user-friendly interfaces.
+                    </p>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+
+<!-- Testimonial End -->
+    
+
+<!-- Footer Start -->
+<div class="container-fluid bg-dark text-light footer pt-5 mt-5 wow fadeIn" data-wow-delay="0.1s">
+    <div class="container py-5">
+        <div class="row g-5">
+            <div class="col-lg-3 col-md-6">
+                <h4 class="text-white mb-3">Quick Link</h4>
+                <a class="btn btn-link" routerLink="/about">About Us</a>
+                <a class="btn btn-link" routerLink="/contact">Contact Us</a>
+                <a class="btn btn-link" href="#">Privacy Policy</a>
+                <a class="btn btn-link" href="#">Terms & Condition</a>
+                <a class="btn btn-link" href="#">FAQs & Help</a>
+            </div>
+            <div class="col-lg-3 col-md-6">
+                <h4 class="text-white mb-3">Contact</h4>
+                <p class="mb-2"><i class="fa fa-map-marker-alt me-3"></i>123 Street, New York, USA</p>
+                <p class="mb-2"><i class="fa fa-phone-alt me-3"></i>+012 345 67890</p>
+                <p class="mb-2"><i class="fa fa-envelope me-3"></i>info&#64;example.com</p>
+                <div class="d-flex pt-2">
+                    <a class="btn btn-outline-light btn-social" href="#"><i class="fab fa-twitter"></i></a>
+                    <a class="btn btn-outline-light btn-social" href="#"><i class="fab fa-facebook-f"></i></a>
+                    <a class="btn btn-outline-light btn-social" href="#"><i class="fab fa-youtube"></i></a>
+                    <a class="btn btn-outline-light btn-social" href="#"><i class="fab fa-linkedin-in"></i></a>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6">
+                <h4 class="text-white mb-3">Gallery</h4>
+                <div class="row g-2 pt-2">
+                    <div class="col-4">
+                        <img class="img-fluid bg-light p-1" src="assets/img/course-1.jpg" alt="">
+                    </div>
+                    <div class="col-4">
+                        <img class="img-fluid bg-light p-1" src="assets/img/course-2.jpg" alt="">
+                    </div>
+                    <div class="col-4">
+                        <img class="img-fluid bg-light p-1" src="assets/img/course-3.jpg" alt="">
+                    </div>
+                    <div class="col-4">
+                        <img class="img-fluid bg-light p-1" src="assets/img/course-2.jpg" alt="">
+                    </div>
+                    <div class="col-4">
+                        <img class="img-fluid bg-light p-1" src="assets/img/course-3.jpg" alt="">
+                    </div>
+                    <div class="col-4">
+                        <img class="img-fluid bg-light p-1" src="assets/img/course-1.jpg" alt="">
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6">
+                <h4 class="text-white mb-3">Newsletter</h4>
+                <p>Dolor amet sit justo amet elitr clita ipsum elitr est.</p>
+                <div class="position-relative mx-auto" style="max-width: 400px;">
+                    <input class="form-control border-0 w-100 py-3 ps-4 pe-5" type="text" placeholder="Your email">
+                    <button type="button" class="btn btn-primary py-2 position-absolute top-0 end-0 mt-2 me-2">SignUp</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="container">
+        <div class="copyright">
+            <div class="row">
+                <div class="col-md-6 text-center text-md-start mb-3 mb-md-0">
+                    &copy; <a class="border-bottom" href="#">eLEARNING</a>, All Right Reserved.
+                </div>
+                <div class="col-md-6 text-center text-md-end">
+                    <div class="footer-menu">
+                        <a href="#">Home</a>
+                        <a href="#">Cookies</a>
+                        <a href="#">Help</a>
+                        <a href="#">FQAs</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Footer End -->
+
+
+<!-- Back to Top -->
+<a href="#" class="btn btn-lg btn-primary btn-lg-square back-to-top"><i class="bi bi-arrow-up"></i></a>

@@ -1,0 +1,226 @@
+<!-- Navbar Start -->
+<nav class="navbar navbar-expand-lg bg-white navbar-light shadow sticky-top p-0">
+    <a routerLink="/dashboard" class="navbar-brand d-flex align-items-center px-4 px-lg-5">
+        <h2 class="m-0 text-primary"><i class="fa fa-book me-3"></i>eLEARNING</h2>
+    </a>
+    <button type="button" class="navbar-toggler me-4" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarCollapse">
+        <div class="navbar-nav ms-auto p-4 p-lg-0">
+            <a routerLink="/dashboard" class="nav-item nav-link">Home</a>
+            <a routerLink="/profile" class="nav-item nav-link">Profile</a>
+            <a routerLink="/about" class="nav-item nav-link">About</a>
+            <a routerLink="/courses" class="nav-item nav-link">Courses</a>
+            <div class="nav-item dropdown">
+                <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">Pages</a>
+                <div class="dropdown-menu fade-down m-0">
+                    <a routerLink="/team" class="dropdown-item">Our Team</a>
+                    <a routerLink="/testimonial" class="dropdown-item">Testimonial</a>
+                </div>
+            </div>
+            <a routerLink="/contact" class="nav-item nav-link active">Contact</a>
+        </div>
+        <button class="btn btn-primary py-4 px-lg-5 d-none d-lg-block" (click)="logout()">Logout<i class="fa fa-arrow-right ms-3"></i></button>
+    </div>
+</nav>
+<!-- Navbar End -->
+
+<!-- Header Start -->
+<div class="container-fluid bg-primary py-5 mb-5 page-header">
+    <div class="container py-5">
+        <div class="row justify-content-center">
+            <div class="col-lg-10 text-center">
+                <h1 class="display-3 text-white animated slideInDown">Contact</h1>
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb justify-content-center">
+                        <li class="breadcrumb-item"><a class="text-white" routerLink="/dashboard">Home</a></li>
+                        <li class="breadcrumb-item text-white active" aria-current="page">Contact</li>
+                    </ol>
+                </nav>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Header End -->
+
+<!-- Contact Start -->
+<div class="container-xxl py-5">
+    <div class="container">
+        <div class="text-center wow fadeInUp" data-wow-delay="0.1s">
+            <h6 class="section-title bg-white text-center text-primary px-3">Contact Us</h6>
+            <h1 class="mb-5">Contact For Any Query</h1>
+        </div>
+        <div class="row g-4">
+            <div class="col-lg-4 col-md-6 wow fadeInUp" data-wow-delay="0.1s">
+                <h5 class="section-title bg-white text-start text-primary pe-3">Get In Touch</h5>
+                <p class="mb-4">The contact form is available below for your queries and questions. Feel free to reach out to us.</p>
+                <p class="mb-2"><i class="fa fa-map-marker-alt text-primary me-2"></i>123 Street, New York, USA</p>
+                <p class="mb-2"><i class="fa fa-phone-alt text-primary me-2"></i>+012 345 67890</p>
+                <p class="mb-2"><i class="fa fa-envelope text-primary me-2"></i>info&#64;example.com</p>
+                <div class="d-flex pt-2">
+                    <a class="btn btn-square btn-outline-primary me-1" href=""><i class="fab fa-twitter"></i></a>
+                    <a class="btn btn-square btn-outline-primary me-1" href=""><i class="fab fa-facebook-f"></i></a>
+                    <a class="btn btn-square btn-outline-primary me-1" href=""><i class="fab fa-youtube"></i></a>
+                    <a class="btn btn-square btn-outline-primary me-1" href=""><i class="fab fa-linkedin-in"></i></a>
+                </div>
+            </div>
+            <div class="col-lg-8 col-md-6 wow fadeInUp" data-wow-delay="0.5s">
+                @if (errorMessage) {
+                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                        {{ errorMessage }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    </div>
+                }
+                @if (successMessage) {
+                    <div class="alert alert-success alert-dismissible fade show" role="alert">
+                        {{ successMessage }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    </div>
+                }
+                <form (ngSubmit)="submitContact()">
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <div class="form-floating">
+                                <input
+                                    type="text"
+                                    class="form-control"
+                                    id="name"
+                                    name="name"
+                                    placeholder="Your Name"
+                                    [(ngModel)]="contactForm.name">
+                                <label for="name">Your Name</label>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-floating">
+                                <input
+                                    type="email"
+                                    class="form-control"
+                                    id="email"
+                                    name="email"
+                                    placeholder="Your Email"
+                                    [(ngModel)]="contactForm.email">
+                                <label for="email">Your Email</label>
+                            </div>
+                        </div>
+                        <div class="col-12">
+                            <div class="form-floating">
+                                <input
+                                    type="text"
+                                    class="form-control"
+                                    id="subject"
+                                    name="subject"
+                                    placeholder="Subject"
+                                    [(ngModel)]="contactForm.subject"
+                                    required>
+                                <label for="subject">Subject</label>
+                            </div>
+                        </div>
+                        <div class="col-12">
+                            <div class="form-floating">
+                                <textarea
+                                    class="form-control"
+                                    placeholder="Leave a message here"
+                                    id="message"
+                                    name="message"
+                                    style="height: 150px"
+                                    [(ngModel)]="contactForm.message"
+                                    required></textarea>
+                                <label for="message">Message</label>
+                            </div>
+                        </div>
+                        <div class="col-12">
+                            <button class="btn btn-primary w-100 py-3" type="submit" [disabled]="isSubmitting">
+                                @if (isSubmitting) {
+                                    <span class="spinner-border spinner-border-sm me-2"></span>
+                                }
+                                Send Message
+                            </button>
+                        </div>
+                    </div>
+                </form>
+                <hr class="my-4">
+                <h5 class="mb-3"><i class="fa fa-history me-2 text-primary"></i>Your Previous Messages</h5>
+                @if (isLoadingMessages) {
+                    <div class="text-center py-3">
+                        <div class="spinner-border text-primary" role="status">
+                            <span class="visually-hidden">Loading...</span>
+                        </div>
+                    </div>
+                } @else if (!isLoadingMessages && myContacts.length === 0) {
+                    <p class="text-muted">You have not sent any messages yet.</p>
+                } @else {
+                    <div class="list-group">
+                        @for (contact of myContacts; track contact.id) {
+                            <div class="list-group-item list-group-item-action mb-2">
+                                <div class="d-flex w-100 justify-content-between">
+                                    <h6 class="mb-1">{{ contact.subject }}</h6>
+                                    <small class="text-muted">{{ contact.createdAt | date: 'medium' }}</small>
+                                </div>
+                                <p class="mb-1">{{ contact.message }}</p>
+                                <small class="d-block mb-1">
+                                    Status:
+                                    @if (contact.status === 'Answered') {
+                                        <span class="badge bg-success">{{ contact.status }}</span>
+                                    } @else if (contact.status === 'Pending') {
+                                        <span class="badge bg-warning text-dark">{{ contact.status }}</span>
+                                    } @else {
+                                        <span class="badge bg-secondary">{{ contact.status }}</span>
+                                    }
+                                </small>
+                                @if (contact.adminReply) {
+                                    <div class="mt-2 p-2 border rounded bg-light">
+                                        <strong>Admin Reply:</strong>
+                                        <p class="mb-0">{{ contact.adminReply }}</p>
+                                        @if (contact.repliedAt) {
+                                            <small class="text-muted">Replied: {{ contact.repliedAt | date: 'medium' }}</small>
+                                        }
+                                    </div>
+                                }
+                                <div class="mt-2 text-end">
+                                    <button class="btn btn-sm btn-outline-danger" (click)="deleteMessage(contact)">
+                                        <i class="fa fa-trash me-1"></i>Delete
+                                    </button>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Contact End -->
+
+<!-- Footer Start -->
+<div class="container-fluid bg-dark text-light footer pt-5 mt-5 wow fadeIn" data-wow-delay="0.1s">
+    <div class="container py-5">
+        <div class="row g-5">
+            <div class="col-lg-3 col-md-6">
+                <h4 class="text-white mb-3">Quick Link</h4>
+                <a class="btn btn-link" routerLink="/about">About Us</a>
+                <a class="btn btn-link" routerLink="/contact">Contact Us</a>
+            </div>
+            <div class="col-lg-3 col-md-6">
+                <h4 class="text-white mb-3">Contact</h4>
+                <p class="mb-2"><i class="fa fa-map-marker-alt me-3"></i>123 Street, New York, USA</p>
+                <p class="mb-2"><i class="fa fa-phone-alt me-3"></i>+012 345 67890</p>
+                <p class="mb-2"><i class="fa fa-envelope me-3"></i>info&#64;example.com</p>
+            </div>
+        </div>
+    </div>
+    <div class="container">
+        <div class="copyright">
+            <div class="row">
+                <div class="col-md-6 text-center text-md-start mb-3 mb-md-0">
+                    &copy; <a class="border-bottom" href="#">eLEARNING</a>, All Right Reserved.
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Footer End -->
+
+<!-- Back to Top -->
+<a href="#" class="btn btn-lg btn-primary btn-lg-square back-to-top"><i class="bi bi-arrow-up"></i></a>

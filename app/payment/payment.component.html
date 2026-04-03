@@ -1,0 +1,116 @@
+<div class="container-xxl py-5">
+  <div class="container">
+    <div class="row justify-content-center">
+      <div class="col-lg-6">
+        <div class="card shadow-sm">
+          <div class="card-body p-4">
+            <h3 class="card-title mb-3 text-center">Course Payment</h3>
+
+            <div *ngIf="isLoading" class="text-center py-4">
+              <div class="spinner-border text-primary" role="status">
+                <span class="visually-hidden">Loading...</span>
+              </div>
+            </div>
+
+            <div *ngIf="!isLoading && errorMessage" class="alert alert-danger">
+              {{ errorMessage }}
+            </div>
+
+            <ng-container *ngIf="!isLoading && planInfo">
+              <div class="mb-3">
+                <h5 class="mb-1">{{ planInfo.courseName }}</h5>
+                <p class="mb-1 text-muted">
+                  <i class="fa fa-crown text-warning me-2"></i>{{ planInfo.plan }}
+                </p>
+                <p class="mb-1">
+                  <strong>Price:</strong> ₹{{ planInfo.price }}
+                </p>
+                <p class="mb-1" *ngIf="planInfo.duration">
+                  <strong>Duration:</strong> {{ planInfo.duration }}
+                </p>
+                <p class="mb-0 text-muted" *ngIf="planInfo.description">
+                  {{ planInfo.description }}
+                </p>
+              </div>
+
+              <div class="mb-3">
+                <label class="form-label d-block"><strong>Select Payment Method</strong></label>
+                <div class="form-check">
+                  <input
+                    class="form-check-input"
+                    type="radio"
+                    id="payUpi"
+                    name="paymentMethod"
+                    value="UPI"
+                    [(ngModel)]="paymentMethod"
+                  />
+                  <label class="form-check-label" for="payUpi">UPI</label>
+                </div>
+                <div class="form-check">
+                  <input
+                    class="form-check-input"
+                    type="radio"
+                    id="payCard"
+                    name="paymentMethod"
+                    value="CARD"
+                    [(ngModel)]="paymentMethod"
+                  />
+                  <label class="form-check-label" for="payCard">Credit / Debit Card</label>
+                </div>
+                <div class="form-check">
+                  <input
+                    class="form-check-input"
+                    type="radio"
+                    id="payNetBanking"
+                    name="paymentMethod"
+                    value="NET_BANKING"
+                    [(ngModel)]="paymentMethod"
+                  />
+                  <label class="form-check-label" for="payNetBanking">Net Banking</label>
+                </div>
+                <div class="form-check">
+                  <input
+                    class="form-check-input"
+                    type="radio"
+                    id="payWallet"
+                    name="paymentMethod"
+                    value="WALLET"
+                    [(ngModel)]="paymentMethod"
+                  />
+                  <label class="form-check-label" for="payWallet">Wallet</label>
+                </div>
+              </div>
+
+              <button class="btn btn-primary w-100 mb-3" (click)="payNow()" [disabled]="isLoading">
+                Pay Now
+              </button>
+
+              <div *ngIf="successMessage" class="alert alert-success">
+                {{ successMessage }}
+              </div>
+
+              <button
+                *ngIf="canGoToCourse"
+                type="button"
+                class="btn btn-success w-100 mb-2"
+                (click)="goToCourse()"
+              >
+                View Course
+              </button>
+
+              <button
+                *ngIf="invoicePdfData"
+                type="button"
+                class="btn btn-outline-secondary w-100"
+                (click)="downloadInvoice()"
+              >
+                Download Invoice
+              </button>
+            </ng-container>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+

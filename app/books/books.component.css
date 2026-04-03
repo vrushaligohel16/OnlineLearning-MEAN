@@ -1,0 +1,15 @@
+.ratio {
+  background-color: #f8f9fa;
+}
+
+.list-group-item.active {
+  background-color: #0d6efd;
+  border-color: #0d6efd;
+  color: #fff;
+}
+
+.list-group-item.active .text-muted,
+.list-group-item.active small {
+  color: #e9ecef !important;
+}
+

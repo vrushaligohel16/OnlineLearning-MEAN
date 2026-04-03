@@ -1,0 +1,328 @@
+<!-- Navbar Start -->
+<nav class="navbar navbar-expand-lg bg-white navbar-light shadow sticky-top p-0">
+    <a routerLink="/dashboard" class="navbar-brand d-flex align-items-center px-4 px-lg-5">
+        <h2 class="m-0 text-primary"><i class="fa fa-book me-3"></i>eLEARNING</h2>
+    </a>
+    <button type="button" class="navbar-toggler me-4" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarCollapse">
+        <div class="navbar-nav ms-auto p-4 p-lg-0">
+            <a routerLink="/dashboard" class="nav-item nav-link">Home</a>
+            <a routerLink="/profile" class="nav-item nav-link">Profile</a>
+            <a routerLink="/about" class="nav-item nav-link">About</a>
+            <a routerLink="/courses" class="nav-item nav-link">Courses</a>
+            <div class="nav-item dropdown">
+                <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">Pages</a>
+                <div class="dropdown-menu fade-down m-0">
+                    <a routerLink="/team" class="dropdown-item">Our Team</a>
+                    <a routerLink="/testimonial" class="dropdown-item">Testimonial</a>
+                </div>
+            </div>
+            <a routerLink="/contact" class="nav-item nav-link">Contact</a>
+        </div>
+        @if (!user) {
+            <a routerLink="/login" class="btn btn-primary py-4 px-lg-5 d-none d-lg-block">Login<i class="fa fa-arrow-right ms-3"></i></a>
+        } @else {
+            <button class="btn btn-primary py-4 px-lg-5 d-none d-lg-block" (click)="logout()">Logout<i class="fa fa-arrow-right ms-3"></i></button>
+        }
+    </div>
+</nav>
+<!-- Navbar End -->
+
+@if (isLoading) {
+    <div class="container py-5">
+        <div class="text-center">
+            <div class="spinner-border text-primary" role="status">
+                <span class="visually-hidden">Loading...</span>
+            </div>
+        </div>
+    </div>
+} @else if (course) {
+    <!-- Course Header -->
+    <div class="container-fluid bg-primary py-5 mb-5">
+        <div class="container py-5">
+            <div class="row">
+                <div class="col-lg-8">
+                    <h1 class="text-white mb-3">{{ course.name }}</h1>
+                    <p class="text-white mb-2"><i class="fa fa-building me-2"></i>{{ course.instituteName }}</p>
+                    <p class="text-white mb-2"><i class="fa fa-user-tie me-2"></i>{{ course.mentor?.name }}</p>
+                    <p class="text-white mb-2"><i class="fa fa-clock me-2"></i>{{ course.duration }} Hours | {{ course.numberOfSessions }} Sessions</p>
+                </div>
+                <div class="col-lg-4 text-center">
+                    @if (course.image) {
+                        <img [src]="course.image" [alt]="course.name" class="img-fluid rounded" style="max-height: 300px; object-fit: cover;">
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container py-5">
+        <div class="row">
+            <!-- Main Content -->
+            <div class="col-lg-8">
+                <!-- Videos Section -->
+                <div class="card mb-4">
+                    <div class="card-header bg-primary text-white">
+                        <h5 class="mb-0"><i class="fa fa-video me-2"></i>Course Videos</h5>
+                    </div>
+                    <div class="card-body">
+                        @if (course.videos && course.videos.length > 0) {
+                            <div class="list-group">
+                                @for (video of course.videos; track $index) {
+                                    <div class="list-group-item">
+                                        <div class="d-flex justify-content-between align-items-center">
+                                            <div class="flex-grow-1">
+                                                <h6 class="mb-1">Session {{ $index + 1 }}: {{ video.title }}</h6>
+                                                <small class="text-muted"><i class="fa fa-clock me-1"></i>{{ video.duration }} minutes</small>
+                                                @if (isVideoCompleted($index)) {
+                                                    <span class="badge bg-success ms-2">Completed</span>
+                                                }
+                                            </div>
+                                            <div>
+                                                @if (video.videoUrl) {
+                                                    <a [href]="video.videoUrl" target="_blank" class="btn btn-sm btn-primary me-2">
+                                                        <i class="fa fa-play me-1"></i>Watch
+                                                    </a>
+                                                }
+                                                @if (user && !isVideoCompleted($index)) {
+                                                    <button class="btn btn-sm btn-success" (click)="markVideoCompleted($index)">
+                                                        <i class="fa fa-check me-1"></i>Mark Complete
+                                                    </button>
+                                                }
+                                            </div>
+                                        </div>
+                                    </div>
+                                }
+                            </div>
+                        } @else {
+                            <p class="text-muted">No videos available for this course.</p>
+                        }
+                    </div>
+                </div>
+
+                <!-- Quiz Section -->
+                @if (course.quiz && course.quiz.questions && course.quiz.questions.length > 0) {
+                    <div class="card mb-4">
+                        <div class="card-header bg-warning text-dark">
+                            <h5 class="mb-0"><i class="fa fa-question-circle me-2"></i>Course Quiz</h5>
+                        </div>
+                        <div class="card-body">
+                            @if (!allVideosCompleted()) {
+                                <div class="alert alert-info">
+                                    <i class="fa fa-info-circle me-2"></i>Please complete all videos before taking the quiz.
+                                </div>
+                            } @else if (quizSubmitted && quizResult) {
+                                <div class="alert" [ngClass]="quizResult.passed ? 'alert-success' : 'alert-danger'">
+                                    <h6>
+                                        @if (quizResult.passed) {
+                                            <i class="fa fa-check-circle me-2"></i>
+                                        } @else {
+                                            <i class="fa fa-times-circle me-2"></i>
+                                        }
+                                        Quiz {{ quizResult.passed ? 'Passed' : 'Failed' }}
+                                    </h6>
+                                    <p class="mb-0">Your Score: {{ quizResult.score.toFixed(2) }}%</p>
+                                    <p class="mb-0">Passing Marks: {{ course.passingMarks }}%</p>
+                                    @if (!quizResult.passed) {
+                                        <p class="mb-0 mt-2">Please retake the quiz to pass.</p>
+                                    }
+                                </div>
+                            } @else {
+                                <form>
+                                    @for (question of course.quiz.questions; track $index; let questionIndex = $index) {
+                                        <div class="mb-4">
+                                            <h6>{{ questionIndex + 1 }}. {{ question.question }}</h6>
+                                            <div class="ms-3">
+                                                @for (option of question.options; track $index; let optionIndex = $index) {
+                                                    <div class="form-check">
+                                                        <input class="form-check-input" type="radio" 
+                                                            [name]="'question' + questionIndex" 
+                                                            [id]="'q' + questionIndex + 'o' + optionIndex"
+                                                            [value]="optionIndex"
+                                                            [checked]="quizAnswers[questionIndex]?.selectedAnswer === optionIndex"
+                                                            (change)="quizAnswers[questionIndex].selectedAnswer = optionIndex">
+                                                        <label class="form-check-label" [for]="'q' + questionIndex + 'o' + optionIndex">
+                                                            {{ option }}
+                                                        </label>
+                                                    </div>
+                                                }
+                                            </div>
+                                        </div>
+                                    }
+                                    <button type="button" class="btn btn-primary" (click)="submitQuiz()" [disabled]="!canTakeQuiz()">
+                                        <i class="fa fa-paper-plane me-2"></i>Submit Quiz
+                                    </button>
+                                </form>
+                            }
+                        </div>
+                    </div>
+                }
+
+                <!-- Certificate Section -->
+                @if (certificate) {
+                    <div class="card mb-4">
+                        <div class="card-header bg-success text-white">
+                            <h5 class="mb-0"><i class="fa fa-certificate me-2"></i>Certificate</h5>
+                        </div>
+                        <div class="card-body text-center">
+                            <div class="mb-3">
+                                <i class="fa fa-certificate fa-5x text-success mb-3"></i>
+                                <h4>Congratulations!</h4>
+                                <p class="text-muted">You have successfully completed this course.</p>
+                                <p><strong>Certificate Number:</strong> {{ certificate.certificateNumber }}</p>
+                                <p><strong>Issued Date:</strong> {{ certificate.issueDate | date:'mediumDate' }}</p>
+                            </div>
+                            <button class="btn btn-primary btn-lg" (click)="downloadCertificate()">
+                                <i class="fa fa-download me-2"></i>Download Certificate (PDF)
+                            </button>
+                        </div>
+                    </div>
+                }
+
+                <!-- Review Section -->
+                @if (certificate) {
+                    <div class="card mb-4">
+                        <div class="card-header bg-info text-white">
+                            <h5 class="mb-0"><i class="fa fa-star me-2"></i>Course Review</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="mb-4">
+                                <label class="form-label">Rate this course:</label>
+                                <div class="star-rating">
+                                    @for (star of [1,2,3,4,5]; track star) {
+                                        <i class="fa fa-star" 
+                                            [class.text-warning]="star <= userReview.rating || star <= hoveredStar"
+                                            [class.text-muted]="star > userReview.rating && star > hoveredStar"
+                                            (click)="setRating(star)"
+                                            (mouseenter)="hoveredStar = star"
+                                            (mouseleave)="hoveredStar = 0"
+                                            style="font-size: 2rem; cursor: pointer; margin-right: 5px;"></i>
+                                    }
+                                </div>
+                            </div>
+                            <div class="mb-3">
+                                <label for="reviewComment" class="form-label">Your Review:</label>
+                                <textarea class="form-control" id="reviewComment" rows="4" 
+                                    [(ngModel)]="userReview.comment" 
+                                    placeholder="Share your experience with this course..."></textarea>
+                            </div>
+                            <button class="btn btn-primary" (click)="submitReview()" [disabled]="isSubmittingReview || userReview.rating === 0">
+                                @if (isSubmittingReview) {
+                                    <span class="spinner-border spinner-border-sm me-2"></span>
+                                }
+                                <i class="fa fa-paper-plane me-2"></i>Submit Review
+                            </button>
+                        </div>
+                    </div>
+                }
+
+                <!-- Reviews Display -->
+                @if (reviews.length > 0) {
+                    <div class="card">
+                        <div class="card-header">
+                            <h5 class="mb-0"><i class="fa fa-comments me-2"></i>Student Reviews ({{ reviews.length }})</h5>
+                        </div>
+                        <div class="card-body">
+                            @for (review of reviews; track review.id) {
+                                <div class="border-bottom pb-3 mb-3">
+                                    <div class="d-flex justify-content-between align-items-center mb-2">
+                                        <h6 class="mb-0">{{ review.userName }}</h6>
+                                        <div>
+                                            @for (star of [1,2,3,4,5]; track star) {
+                                                <i class="fa fa-star" 
+                                                    [class.text-warning]="star <= review.rating"
+                                                    [class.text-muted]="star > review.rating"></i>
+                                            }
+                                        </div>
+                                    </div>
+                                    @if (review.comment) {
+                                        <p class="text-muted mb-0">{{ review.comment }}</p>
+                                    }
+                                    <small class="text-muted">{{ review.createdAt | date:'medium' }}</small>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                }
+            </div>
+
+            <!-- Sidebar -->
+            <div class="col-lg-4">
+                <div class="card">
+                    <div class="card-header bg-primary text-white">
+                        <h5 class="mb-0">Course Information</h5>
+                    </div>
+                    <div class="card-body">
+                        <p><strong>Category:</strong> {{ course.category?.name }}</p>
+                        <p><strong>Institute:</strong> {{ course.instituteName }}</p>
+                        <p><strong>Mentor:</strong> {{ course.mentor?.name }}</p>
+                        <p><strong>Duration:</strong> {{ course.duration }} Hours</p>
+                        <p><strong>Sessions:</strong> {{ course.numberOfSessions }}</p>
+                        @if (course.mentor?.courseSpecialization) {
+                            <p><strong>Specialization:</strong> {{ course.mentor.courseSpecialization }}</p>
+                        }
+                    </div>
+                </div>
+
+                @if (progress) {
+                    <div class="card mt-3">
+                        <div class="card-header bg-info text-white">
+                            <h5 class="mb-0">Your Progress</h5>
+                        </div>
+                        <div class="card-body">
+                            <p><strong>Videos Completed:</strong> {{ progress.completedVideos?.length || 0 }} / {{ course.videos?.length || 0 }}</p>
+                            @if (progress.quizCompleted) {
+                                <p><strong>Quiz Score:</strong> {{ progress.quizScore.toFixed(2) }}%</p>
+                            }
+                            @if (progress.certificateEarned) {
+                                <p class="text-success"><strong>Certificate Earned!</strong></p>
+                            }
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+} @else {
+    <div class="container py-5">
+        <div class="alert alert-danger">
+            <h4>Course not found</h4>
+            <p>The course you are looking for does not exist.</p>
+            <a routerLink="/courses" class="btn btn-primary">Back to Courses</a>
+        </div>
+    </div>
+}
+
+<!-- Footer Start -->
+<div class="container-fluid bg-dark text-light footer pt-5 mt-5">
+    <div class="container py-5">
+        <div class="row g-5">
+            <div class="col-lg-3 col-md-6">
+                <h4 class="text-white mb-3">Quick Link</h4>
+                <a class="btn btn-link" routerLink="/about">About Us</a>
+                <a class="btn btn-link" routerLink="/contact">Contact Us</a>
+            </div>
+            <div class="col-lg-3 col-md-6">
+                <h4 class="text-white mb-3">Contact</h4>
+                <p class="mb-2"><i class="fa fa-map-marker-alt me-3"></i>123 Street, New York, USA</p>
+                <p class="mb-2"><i class="fa fa-phone-alt me-3"></i>+012 345 67890</p>
+                <p class="mb-2"><i class="fa fa-envelope me-3"></i>info&#64;example.com</p>
+            </div>
+        </div>
+    </div>
+    <div class="container">
+        <div class="copyright">
+            <div class="row">
+                <div class="col-md-6 text-center text-md-start mb-3 mb-md-0">
+                    &copy; <a class="border-bottom" href="#">eLEARNING</a>, All Right Reserved.
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Footer End -->
+
+<!-- Back to Top -->
+<a href="#" class="btn btn-lg btn-primary btn-lg-square back-to-top"><i class="bi bi-arrow-up"></i></a>

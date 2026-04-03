@@ -1,0 +1,137 @@
+<!-- Main registration layout container -->
+<div class="registration-container">
+  <div class="registration-card">
+
+    <!-- Page heading -->
+    <h2>Register</h2>
+
+    <!-- Reactive registration form -->
+    <form [formGroup]="registrationForm" (ngSubmit)="onSubmit()">
+
+      <!-- Name field -->
+      <div class="form-group">
+        <label for="name">Name</label>
+        <input
+          type="text"
+          id="name"
+          formControlName="name"
+          class="form-control"
+          [class.error]="registrationForm.get('name')?.invalid && registrationForm.get('name')?.touched"
+        />
+
+        <!-- Name validation messages -->
+        @if (registrationForm.get('name')?.invalid && registrationForm.get('name')?.touched) {
+          <span class="error-message">
+            @if (registrationForm.get('name')?.errors?.['required']) {
+              Name is required
+            } @else if (registrationForm.get('name')?.errors?.['minlength']) {
+              Name must be at least 3 characters
+            }
+          </span>
+        }
+      </div>
+
+      <!-- Email field -->
+      <div class="form-group">
+        <label for="email">Email</label>
+        <input
+          type="email"
+          id="email"
+          formControlName="email"
+          class="form-control"
+          [class.error]="registrationForm.get('email')?.invalid && registrationForm.get('email')?.touched"
+        />
+
+        <!-- Email validation messages -->
+        @if (registrationForm.get('email')?.invalid && registrationForm.get('email')?.touched) {
+          <span class="error-message">
+            @if (registrationForm.get('email')?.errors?.['required']) {
+              Email is required
+            } @else if (registrationForm.get('email')?.errors?.['email']) {
+              Please enter a valid email
+            }
+          </span>
+        }
+      </div>
+
+      <!-- Password field -->
+      <div class="form-group">
+        <label for="password">Password</label>
+        <input
+          type="password"
+          id="password"
+          formControlName="password"
+          class="form-control"
+          [class.error]="registrationForm.get('password')?.invalid && registrationForm.get('password')?.touched"
+        />
+
+        <!-- Password validation messages -->
+        @if (registrationForm.get('password')?.invalid && registrationForm.get('password')?.touched) {
+          <span class="error-message">
+            @if (registrationForm.get('password')?.errors?.['required']) {
+              Password is required
+            } @else if (registrationForm.get('password')?.errors?.['minlength']) {
+              Password must be at least 6 characters
+            }
+          </span>
+        }
+      </div>
+
+      <!-- Confirm password field -->
+      <div class="form-group">
+        <label for="confirmPassword">Confirm Password</label>
+        <input
+          type="password"
+          id="confirmPassword"
+          formControlName="confirmPassword"
+          class="form-control"
+          [class.error]="registrationForm.get('confirmPassword')?.invalid && registrationForm.get('confirmPassword')?.touched"
+        />
+
+        <!-- Confirm password validation messages -->
+        @if (registrationForm.get('confirmPassword')?.invalid && registrationForm.get('confirmPassword')?.touched) {
+          <span class="error-message">
+            @if (registrationForm.get('confirmPassword')?.errors?.['required']) {
+              Please confirm your password
+            } @else if (registrationForm.get('confirmPassword')?.errors?.['passwordMismatch']) {
+              Passwords do not match
+            }
+          </span>
+        }
+      </div>
+
+      <!-- Backend error message -->
+      @if (errorMessage) {
+        <div class="alert alert-error">
+          {{ errorMessage }}
+        </div>
+      }
+
+      <!-- Success message -->
+      @if (successMessage) {
+        <div class="alert alert-success">
+          {{ successMessage }}
+        </div>
+      }
+
+      <!-- Submit button with loading state -->
+      <button
+        type="submit"
+        class="btn btn-primary"
+        [disabled]="registrationForm.invalid || isLoading"
+      >
+        @if (isLoading) {
+          <span>Registering...</span>
+        } @else {
+          <span>Register</span>
+        }
+      </button>
+    </form>
+
+    <!-- Login redirect link -->
+    <div class="login-link">
+      <p>Already have an account? <a routerLink="/login">Login here</a></p>
+    </div>
+
+  </div>
+</div>

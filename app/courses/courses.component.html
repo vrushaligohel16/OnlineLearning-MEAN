@@ -1,0 +1,194 @@
+<!-- Navbar Start -->
+<nav class="navbar navbar-expand-lg bg-white navbar-light shadow sticky-top p-0">
+    <a routerLink="/dashboard" class="navbar-brand d-flex align-items-center px-4 px-lg-5">
+        <h2 class="m-0 text-primary"><i class="fa fa-book me-3"></i>eLEARNING</h2>
+    </a>
+    <button type="button" class="navbar-toggler me-4" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarCollapse">
+        <div class="navbar-nav ms-auto p-4 p-lg-0">
+            <a routerLink="/dashboard" class="nav-item nav-link">Home</a>
+            <a routerLink="/profile" class="nav-item nav-link">Profile</a>
+            <a routerLink="/about" class="nav-item nav-link">About</a>
+            <a routerLink="/courses" class="nav-item nav-link active">Courses</a>
+            <div class="nav-item dropdown">
+                <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">Pages</a>
+                <div class="dropdown-menu fade-down m-0">
+                    <a routerLink="/team" class="dropdown-item">Our Team</a>
+                    <a routerLink="/testimonial" class="dropdown-item">Testimonial</a>
+                </div>
+            </div>
+            <a routerLink="/contact" class="nav-item nav-link">Contact</a>
+        </div>
+        @if (!user) {
+            <a routerLink="/login" class="btn btn-primary py-4 px-lg-5 d-none d-lg-block">Login<i class="fa fa-arrow-right ms-3"></i></a>
+        } @else {
+            <button class="btn btn-primary py-4 px-lg-5 d-none d-lg-block" (click)="logout()">Logout<i class="fa fa-arrow-right ms-3"></i></button>
+        }
+    </div>
+</nav>
+<!-- Navbar End -->
+
+<!-- Header Start -->
+<div class="container-fluid bg-primary py-5 mb-5 page-header">
+    <div class="container py-5">
+        <div class="row justify-content-center">
+            <div class="col-lg-10 text-center">
+                <h1 class="display-3 text-white animated slideInDown">
+                    @if (showCategories) {
+                        Courses
+                    } @else {
+                        {{ selectedCategory?.name || 'Courses' }}
+                    }
+                </h1>
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb justify-content-center">
+                        <li class="breadcrumb-item"><a class="text-white" routerLink="/dashboard">Home</a></li>
+                        <li class="breadcrumb-item"><a class="text-white" routerLink="/courses">Courses</a></li>
+                        @if (!showCategories && selectedCategory) {
+                            <li class="breadcrumb-item text-white active" aria-current="page">{{ selectedCategory.name }}</li>
+                        }
+                    </ol>
+                </nav>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Header End -->
+
+<!-- Categories View Start -->
+@if (showCategories) {
+    <div class="container-xxl py-5 category">
+        <div class="container">
+            <div class="text-center wow fadeInUp" data-wow-delay="0.1s">
+                <h6 class="section-title bg-white text-center text-primary px-3">Categories</h6>
+                <h1 class="mb-5">Course Categories</h1>
+            </div>
+            
+            @if (isLoading) {
+                <div class="text-center py-5">
+                    <div class="spinner-border text-primary" role="status">
+                        <span class="visually-hidden">Loading...</span>
+                    </div>
+                </div>
+            } @else if (categories.length === 0) {
+                <div class="text-center py-5">
+                    <p class="text-muted">No categories available at the moment.</p>
+                </div>
+            } @else {
+                <div class="row g-4 justify-content-center">
+                    @for (category of categories; track category.id) {
+                        <div class="col-lg-3 col-md-4 col-sm-6 wow zoomIn" [attr.data-wow-delay]="'0.' + ($index + 1) + 's'">
+                            <div class="position-relative d-block overflow-hidden bg-light rounded" style="cursor: pointer; min-height: 250px;" (click)="selectCategory(category)">
+                                @if (category.image) {
+                                    <img class="img-fluid" [src]="category.image" [alt]="category.name" style="width: 100%; height: 200px; object-fit: cover;">
+                                } @else {
+                                    <img class="img-fluid" src="assets/img/cat-{{ ($index % 4) + 1 }}.jpg" [alt]="category.name" style="width: 100%; height: 200px; object-fit: cover;">
+                                }
+                                <div class="bg-white text-center position-absolute bottom-0 start-0 end-0 py-3 px-3">
+                                    <h5 class="m-0 mb-1">{{ category.name }}</h5>
+                                    <small class="text-primary">{{ category.numberOfCourses || 0 }} Course{{ (category.numberOfCourses || 0) !== 1 ? 's' : '' }}</small>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+            }
+        </div>
+    </div>
+}
+
+<!-- Courses View Start -->
+@if (!showCategories) {
+    <div class="container-xxl py-5">
+        <div class="container">
+            <div class="mb-4">
+                <button type="button" class="btn btn-outline-primary" (click)="goBackToCategories()">
+                    <i class="fa fa-arrow-left me-2"></i>Back to Categories
+                </button>
+            </div>
+            
+            <div class="text-center wow fadeInUp" data-wow-delay="0.1s">
+                <h6 class="section-title bg-white text-center text-primary px-3">Courses</h6>
+                <h1 class="mb-5">{{ selectedCategory?.name || 'Courses' }}</h1>
+            </div>
+            
+            @if (isLoading) {
+                <div class="text-center py-5">
+                    <div class="spinner-border text-primary" role="status">
+                        <span class="visually-hidden">Loading...</span>
+                    </div>
+                </div>
+            } @else if (courses.length === 0) {
+                <div class="text-center py-5">
+                    <p class="text-muted">No courses available in this category at the moment.</p>
+                </div>
+            } @else {
+                <div class="row g-4 justify-content-center">
+                    @for (course of courses; track course.id) {
+                        <div class="col-lg-4 col-md-6 wow fadeInUp" [attr.data-wow-delay]="'0.' + ($index + 1) + 's'">
+                            <div class="course-item bg-light">
+                                <div class="position-relative overflow-hidden">
+                                    @if (course.image) {
+                                        <img class="img-fluid" [src]="course.image" [alt]="course.name" style="width: 100%; height: 200px; object-fit: cover;">
+                                    } @else {
+                                        <img class="img-fluid" src="assets/img/course-1.jpg" [alt]="course.name" style="width: 100%; height: 200px; object-fit: cover;">
+                                    }
+                                    <div class="w-100 d-flex justify-content-center position-absolute bottom-0 start-0 mb-4">
+                                        <button type="button" class="flex-shrink-0 btn btn-sm btn-primary px-3" style="border-radius: 30px;" (click)="goToCourse(course.id)">
+                                            Go to Course
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="text-center p-4 pb-0">
+                                    <h5 class="mb-4">{{ course.name }}</h5>
+                                    <p class="text-muted mb-2"><i class="fa fa-building text-primary me-2"></i>{{ course.instituteName }}</p>
+                                    <p class="text-muted mb-2"><i class="fa fa-user-tie text-primary me-2"></i>{{ course.mentorName }}</p>
+                                </div>
+                                <div class="d-flex border-top">
+                                    <small class="flex-fill text-center border-end py-2"><i class="fa fa-tag text-primary me-2"></i>{{ course.categoryName }}</small>
+                                    <small class="flex-fill text-center border-end py-2"><i class="fa fa-clock text-primary me-2"></i>{{ course.duration }} Hrs</small>
+                                    <small class="flex-fill text-center py-2"><i class="fa fa-video text-primary me-2"></i>{{ course.numberOfSessions }} Sessions</small>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+            }
+        </div>
+    </div>
+}
+<!-- Courses End -->
+
+<!-- Footer Start -->
+<div class="container-fluid bg-dark text-light footer pt-5 mt-5 wow fadeIn" data-wow-delay="0.1s">
+    <div class="container py-5">
+        <div class="row g-5">
+            <div class="col-lg-3 col-md-6">
+                <h4 class="text-white mb-3">Quick Link</h4>
+                <a class="btn btn-link" routerLink="/about">About Us</a>
+                <a class="btn btn-link" routerLink="/contact">Contact Us</a>
+            </div>
+            <div class="col-lg-3 col-md-6">
+                <h4 class="text-white mb-3">Contact</h4>
+                <p class="mb-2"><i class="fa fa-map-marker-alt me-3"></i>123 Street, New York, USA</p>
+                <p class="mb-2"><i class="fa fa-phone-alt me-3"></i>+012 345 67890</p>
+                <p class="mb-2"><i class="fa fa-envelope me-3"></i>info&#64;example.com</p>
+            </div>
+        </div>
+    </div>
+    <div class="container">
+        <div class="copyright">
+            <div class="row">
+                <div class="col-md-6 text-center text-md-start mb-3 mb-md-0">
+                    &copy; <a class="border-bottom" href="#">eLEARNING</a>, All Right Reserved.
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Footer End -->
+
+<!-- Back to Top -->
+<a href="#" class="btn btn-lg btn-primary btn-lg-square back-to-top"><i class="bi bi-arrow-up"></i></a>
